@@ -1,11 +1,13 @@
 <!DOCTYPE html>
 <html>
+
 <head>
     <title>Crear Evento</title>
 </head>
+
 <body>
     <h2>Crear Nuevo Evento</h2>
-    <form action="../../Controllers/EventController.php" method="post" enctype="multipart/form-data">
+    <form action="/qsl_virtual/public/index.php?action=create_event" method="post" enctype="multipart/form-data">
         <label>Nombre del Evento:</label><br>
         <input type="text" name="name_event" required><br><br>
 
@@ -21,4 +23,12 @@
         <input type="submit" value="Guardar Evento">
     </form>
 </body>
+
+<?php if (isset($_GET['msg'])): ?>
+    <div style="background: #ffd1d1; color: red; padding: 10px; border: 1px solid red;">
+        <?= htmlspecialchars($_GET['msg']) ?>
+    </div>
+<?php endif; ?>
+
+
 </html>

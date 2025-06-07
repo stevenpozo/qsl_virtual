@@ -6,7 +6,7 @@ if (!isset($_GET['event_id'])) {
 }
 
 $model = new EventModel();
-$evento = $model->obtenerEventoPorId($_GET['event_id']);
+$evento = $model->getEventById($_GET['event_id']);
 
 if (!$evento) {
     echo "Evento no encontrado.";

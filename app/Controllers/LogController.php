@@ -1,52 +1,68 @@
 <?php
 require_once(__DIR__ . '/../Models/LogModel.php');
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['adi_file'])) {
     $eventId = $_POST['event_id'];
     $archivo = $_FILES['adi_file']['tmp_name'];
 
-    $lineas = file($archivo);
-    $modelo = new LogModel();
+    $lines = file($archivo);
+    $model = new LogModel();
 
-    foreach ($lineas as $linea) {
-        if (strpos($linea, '<EOR>') !== false) {
-            $call = extraerDato($linea, 'CALL');
-            $date = extraerDato($linea, 'QSO_DATE');
-            $time = extraerDato($linea, 'TIME_ON');
-            $band = extraerDato($linea, 'BAND');
-            $mode = extraerDato($linea, 'MODE');
-            $rst_rcvd = extraerDato($linea, 'RST_RCVD');
-            $rst_sent = extraerDato($linea, 'RST_SENT');
+    $duplicados = 0;
+    $insertados = 0;
 
-            if ($call && $date && $time) {
-                $dateFormatted = substr($date, 0, 4) . "-" . substr($date, 4, 2) . "-" . substr($date, 6, 2);
-                $utcFormatted = formatoHora($time);
-                $rst = "$rst_rcvd,$rst_sent";
+    foreach ($lines as $line) {
+        if (strpos($line, '<EOR>') !== false) {
+            $data = [
+                'call_log' => extractData($line, 'CALL'),
+                'date_log' => formatDate(extractData($line, 'QSO_DATE')),
+                'utc_log' => formatTime(extractData($line, 'TIME_ON')),
+                'time_off_log' => formatTime(extractData($line, 'TIME_OFF')),
+                'band_log' => extractData($line, 'BAND'),
+                'mode_log' => extractData($line, 'MODE'),
+                'rst_rcvd_log' => extractData($line, 'RST_RCVD'),
+                'rst_sent_log' => extractData($line, 'RST_SENT'),
+                'freq_log' => extractData($line, 'FREQ'),
+                'gridsquare_log' => extractData($line, 'GRIDSQUARE'),
+                'my_gridsquare_log' => extractData($line, 'MY_GRIDSQUARE'),
+                'station_callsign_log' => extractData($line, 'STATION_CALLSIGN'),
+                'comment_log' => extractData($line, 'COMMENT'),
+                'status_log' => 1,
+                'event_id' => $eventId
+            ];
 
-                $modelo->insertarLog($eventId, $call, $dateFormatted, $utcFormatted, $band, $mode, $rst);
+            if ($data['call_log'] && $data['date_log'] && $data['utc_log']) {
+                if (!$model->existsLog($eventId, $data)) {
+                    if ($model->insertLog($data)) {
+                        $insertados++;
+                    }
+                } else {
+                    $duplicados++;
+                }
             }
         }
     }
 
-    header("Location: ../Views/admin/listar_eventos.php");
+    $message = "✅ $insertados logs inserted.";
+    if ($duplicados > 0) {
+        $message .= " ⚠️ $duplicados duplicates were skipped.";
+    }
+
+    header("Location: /qsl_virtual/public/index.php?view=admin/events/list_events&msg=" . urlencode($message));
     exit;
 }
 
-function extraerDato($linea, $etiqueta) {
-    $pattern = "/<$etiqueta:\d+>([^<]*)/";
-    if (preg_match($pattern, $linea, $coincidencias)) {
-        return trim($coincidencias[1]);
-    }
-    return null;
+function extractData($line, $tag) {
+    $pattern = "/<$tag:\d+>([^<]*)/";
+    return (preg_match($pattern, $line, $matches)) ? trim($matches[1]) : null;
 }
 
-function formatoHora($hhmmss) {
-    if (strlen($hhmmss) === 6) {
-        $h = substr($hhmmss, 0, 2);
-        $m = substr($hhmmss, 2, 2);
-        $s = substr($hhmmss, 4, 2);
-        return "$h:$m:$s";
-    }
-    return $hhmmss; // en caso de datos corruptos, lo dejamos como vino
+function formatDate($date) {
+    return $date ? substr($date, 0, 4) . "-" . substr($date, 4, 2) . "-" . substr($date, 6, 2) : null;
 }
-?>
+
+function formatTime($hhmmss) {
+    return (strlen($hhmmss) === 6)
+        ? substr($hhmmss, 0, 2) . ':' . substr($hhmmss, 2, 2) . ':' . substr($hhmmss, 4, 2)
+        : $hhmmss;
+}

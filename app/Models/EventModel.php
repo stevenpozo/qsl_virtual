@@ -11,21 +11,21 @@ class EventModel
         $this->conn = $database->getConnection();
     }
 
-    public function insertarEvento($name_event, $date_event, $call_event, $image_event)
+    public function createEvent($data)
     {
-        $sql = "INSERT INTO eventos (name_event, date_event, call_event, image_event) 
-                VALUES (:name_event, :date_event, :call_event, :image_event)";
-
+        $sql = "INSERT INTO eventos (name_event, date_event, call_event, image_event, status_event)
+                VALUES (:name_event, :date_event, :call_event, :image_event, :status_event)";
         $stmt = $this->conn->prepare($sql);
         return $stmt->execute([
-            ':name_event' => $name_event,
-            ':date_event' => $date_event,
-            ':call_event' => $call_event,
-            ':image_event' => $image_event
+            ':name_event' => $data['name_event'],
+            ':date_event' => $data['date_event'],
+            ':call_event' => $data['call_event'],
+            ':image_event' => $data['image_event'],
+            ':status_event' => $data['status_event']
         ]);
     }
 
-    public function obtenerEventos()
+    public function getAllEvents()
     {
         $sql = "SELECT * FROM eventos ORDER BY date_event DESC";
         $stmt = $this->conn->prepare($sql);
@@ -33,7 +33,7 @@ class EventModel
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
-    public function obtenerEventoPorId($id)
+    public function getEventById($id)
     {
         $sql = "SELECT * FROM eventos WHERE event_id = :id";
         $stmt = $this->conn->prepare($sql);
@@ -41,7 +41,7 @@ class EventModel
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
 
-    public function actualizarEvento($id, $name, $date, $call, $image, $status)
+    public function updateEvent($id, $name, $date, $call, $image, $status)
     {
         $sql = "UPDATE eventos SET 
                 name_event = :name,
@@ -59,5 +59,59 @@ class EventModel
             ':status' => $status,
             ':id' => $id
         ]);
+    }
+
+    public function existsCallSign($call_event)
+    {
+        $sql = "SELECT COUNT(*) FROM eventos WHERE call_event = :call_event";
+        $stmt = $this->conn->prepare($sql);
+        $stmt->execute([':call_event' => $call_event]);
+        return $stmt->fetchColumn() > 0;
+    }
+
+    public function countFilteredEvents($search = '', $date = '')
+    {
+        $sql = "SELECT COUNT(*) FROM eventos WHERE 1=1";
+        $params = [];
+
+        if (!empty($search)) {
+            $sql .= " AND (name_event LIKE :search OR call_event LIKE :search)";
+            $params[':search'] = "%$search%";
+        }
+        if (!empty($date)) {
+            $sql .= " AND date_event = :date";
+            $params[':date'] = $date;
+        }
+
+        $stmt = $this->conn->prepare($sql);
+        $stmt->execute($params);
+        return $stmt->fetchColumn();
+    }
+
+    public function getFilteredEvents($search = '', $date = '', $limit = 20, $offset = 0)
+    {
+        $sql = "SELECT * FROM eventos WHERE 1=1";
+        $params = [];
+
+        if (!empty($search)) {
+            $sql .= " AND (name_event LIKE :search OR call_event LIKE :search)";
+            $params[':search'] = "%$search%";
+        }
+        if (!empty($date)) {
+            $sql .= " AND date_event = :date";
+            $params[':date'] = $date;
+        }
+
+        $sql .= " ORDER BY date_event DESC LIMIT :limit OFFSET :offset";
+
+        $stmt = $this->conn->prepare($sql);
+        foreach ($params as $key => $value) {
+            $stmt->bindValue($key, $value);
+        }
+        $stmt->bindValue(':limit', (int)$limit, PDO::PARAM_INT);
+        $stmt->bindValue(':offset', (int)$offset, PDO::PARAM_INT);
+
+        $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 }
