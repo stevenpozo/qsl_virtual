@@ -8,6 +8,9 @@ $rutas_validas = [
     'admin/logs/list_logs' => 'app/Views/admin/logs/list_logs.php',
     'admin/logs/edit_log' => 'app/Views/admin/logs/edit_log.php',
     'admin/statistics/statistics_events' => 'app/Views/admin/statistics/statistics_events.php',
+    'public/search_qsl' => 'app/Views/public/search_qsl.php',
+    'public/list_qsls' => 'app/Views/public/list_qsls.php',
+
 
 ];
 
@@ -104,6 +107,44 @@ if ($view === 'admin/events/statistics_events') {
     $controller->showStatistics();
     exit;
 }
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && $action === 'buscar_qsls') {
+    require_once(__DIR__ . '/../app/Models/LogModel.php');
+    $model = new LogModel();
+
+    $event_id = $_POST['event_id'];
+    $call = strtoupper(trim($_POST['call']));
+
+    $logs = $model->getLogsByEventAndCall($event_id, $call);
+
+    if (count($logs) === 0) {
+        header("Location: index.php?view=public/search_qsl&msg=" . urlencode("❌ Record not found for CALL '$call'"));
+        exit;
+    }
+
+    // Pasar logs a la vista
+    $_SESSION['qsls'] = $logs;
+    $_SESSION['call'] = $call;
+    $_SESSION['event_id'] = $event_id;
+
+    header("Location: index.php?view=public/list_qsls");
+    exit;
+}
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && $action === 'search_logs') {
+    require_once(__DIR__ . '/../app/Controllers/QslController.php');
+    $controller = new QslController();
+    $controller->searchLogs();
+    exit;
+}
+
+if ($action === 'generate_qsl_diploma') {
+    require_once(__DIR__ . '/../app/Controllers/QslController.php');
+    $controller = new QslController();
+    $controller->generateQslDiploma();
+    exit;
+}
+
 
 
 // ✅ Mostrar vista correspondiente (AL FINAL)

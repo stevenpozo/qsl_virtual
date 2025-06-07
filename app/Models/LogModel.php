@@ -164,4 +164,15 @@ class LogModel
         $stmt->execute([':eid' => $event_id]);
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
+
+    public function getLogsByEventAndCall($event_id, $call)
+    {
+        $sql = "SELECT * FROM logs WHERE event_id = :event_id AND UPPER(call_log) = :call_log";
+        $stmt = $this->conn->prepare($sql);
+        $stmt->execute([
+            ':event_id' => $event_id,
+            ':call_log' => strtoupper($call)
+        ]);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
 }
