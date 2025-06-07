@@ -4,7 +4,7 @@ class Database {
     private $port = "3307"; 
     private $db_name = "qsl_virtual";
     private $username = "root";
-    private $password = "Stevenpozo12.";
+    private $password = "";
     public $conn;
 
     public function getConnection(): PDO {

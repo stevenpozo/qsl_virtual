@@ -5,7 +5,7 @@
 </head>
 <body>
     <h2>Crear Nuevo Evento</h2>
-    <form action="../../Controllers/EventoController.php" method="post" enctype="multipart/form-data">
+    <form action="../../Controllers/EventController.php" method="post" enctype="multipart/form-data">
         <label>Nombre del Evento:</label><br>
         <input type="text" name="name_event" required><br><br>
 
