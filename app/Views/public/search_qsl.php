@@ -10,82 +10,66 @@ $events = $eventModel->getAllEvents();
 <head>
     <meta charset="UTF-8">
     <title>Buscar QSL Virtual</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background: #f2f2f2;
-            padding: 30px;
-            text-align: center;
-        }
+    <meta name="viewport" content="width=device-width, initial-scale=1">
 
-        form {
-            display: inline-block;
-            background: white;
-            padding: 30px;
-            border-radius: 10px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-        }
+    <!-- Bootstrap -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Icons Bootstrap -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
 
-        select,
-        input[type="text"] {
-            width: 100%;
-            padding: 10px;
-            margin: 15px 0;
-            font-size: 16px;
-        }
-
-        button {
-            padding: 10px 20px;
-            background: #007bff;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            font-size: 16px;
-            cursor: pointer;
-        }
-
-        .msg {
-            margin: 15px auto;
-            color: red;
-        }
-    </style>
+    <!-- CSS personalizado -->
+    <link href="/qsl_virtual/app/Views/styles/search_qsl.css" rel="stylesheet">
 </head>
 
 <body>
-
     <?php if (session_status() === PHP_SESSION_NONE) session_start(); ?>
-    <div style="text-align: right; margin-bottom: 20px;">
-        <?php if (isset($_SESSION['username'])): ?>
-            <a href="/qsl_virtual/public/index.php?view=admin/management/dashboard">Dashboard</a> |
-            <a href="/qsl_virtual/public/index.php?action=logout">Cerrar sesión</a>
-        <?php else: ?>
-            <a href="/qsl_virtual/public/index.php?view=admin/management/login">Login</a>
+
+    <!-- Navbar -->
+    <nav class="navbar navbar-dark bg-dark bg-opacity-90 px-4">
+        <div class="container-fluid d-flex justify-content-between align-items-center">
+            <span class="navbar-text text-white fw-bold">QSL Virtual Ecuador</span>
+            <a href="/qsl_virtual/public/index.php?view=admin/management/login" class="btn btn-success">
+                <i class="bi bi-person-circle"></i> Login
+            </a>
+        </div>
+    </nav>
+
+    <!-- Contenido -->
+    <div class="container py-5">
+        <?php if (isset($_GET['msg'])): ?>
+            <div class="alert alert-danger text-center"><?= htmlspecialchars($_GET['msg']) ?></div>
         <?php endif; ?>
+
+        <form action="/qsl_virtual/public/index.php?action=search_logs" method="POST"
+            class="form-container mx-auto">
+            <h2 class="text-center text-black mb-4">QSL ECUADOR</h2>
+
+            <div class="mb-4">
+                <label for="event_id" class="form-label fw-semibold">
+                    <i class="bi bi-calendar-event-fill me-1"></i>Seleccione un evento:
+                </label>
+                <select name="event_id" class="form-select" required>
+                    <option value="">-- Seleccione --</option>
+                    <?php foreach ($events as $event): ?>
+                        <option value="<?= $event['event_id'] ?>">
+                            <?= htmlspecialchars($event['name_event']) ?> (<?= $event['date_event'] ?>)
+                        </option>
+                    <?php endforeach; ?>
+                </select>
+            </div>
+
+            <div class="mb-4">
+                <label for="call" class="form-label fw-semibold">
+                    <i class="bi bi-broadcast-pin me-1"></i>Ingrese su indicativo (CALL):
+                </label>
+                <input type="text" name="call" class="form-control" placeholder="Ej: PU1AJN" required>
+            </div>
+
+            <button type="submit" class="btn btn-primary w-100 btn-lg">
+                <i class="bi bi-search"></i> Buscar registros
+            </button>
+        </form>
     </div>
-
-
-    <h2>Buscar tarjeta QSL virtual</h2>
-
-    <?php if (isset($_GET['msg'])): ?>
-        <div class="msg"><?= htmlspecialchars($_GET['msg']) ?></div>
-    <?php endif; ?>
-
-    <form action="/qsl_virtual/public/index.php?action=search_logs" method="POST">
-        <label for="event_id">Seleccione un evento:</label><br>
-        <select name="event_id" required>
-            <option value="">-- Seleccione --</option>
-            <?php foreach ($events as $event): ?>
-                <option value="<?= $event['event_id'] ?>">
-                    <?= htmlspecialchars($event['name_event']) ?> (<?= $event['date_event'] ?>)
-                </option>
-            <?php endforeach; ?>
-        </select><br>
-
-        <label for="call">Ingrese su indicativo (CALL):</label><br>
-        <input type="text" name="call" placeholder="Ej: PU1AJN" required><br>
-
-        <button type="submit">Buscar registros</button>
-    </form>
 </body>
 
 </html>

@@ -1,7 +1,6 @@
 <?php
 $model = new EventModel();
 
-// Filtros y paginación
 $search = $_GET['search'] ?? '';
 $date_filter = $_GET['date'] ?? '';
 $page = isset($_GET['page']) ? (int) $_GET['page'] : 1;
@@ -14,139 +13,139 @@ $total_pages = ceil($total / $per_page);
 ?>
 
 <!DOCTYPE html>
-<html>
+<html lang="es">
 
 <head>
-    <title>Lista de Eventos</title>
-    <style>
-        table {
-            width: 90%;
-            border-collapse: collapse;
-            margin: 20px auto;
-        }
+    <meta charset="UTF-8">
+    <title>Eventos Registrados</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
 
-        th,
-        td {
-            border: 1px solid #ccc;
-            padding: 12px;
-            text-align: center;
-        }
+    <!-- Bootstrap + Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
 
-        th {
-            background-color: #f2f2f2;
-        }
+    <!-- CSS personalizado -->
+    <link href="/qsl_virtual/app/Views/styles/list_events.css" rel="stylesheet">
 
-        img {
-            max-width: 150px;
-            height: auto;
+    <script>
+        function confirmLogout() {
+            if (confirm("¿Estás seguro de que deseas cerrar sesión?")) {
+                window.location.href = "/qsl_virtual/public/index.php?action=logout";
+            }
         }
-
-        h2 {
-            text-align: center;
-        }
-
-        .volver,
-        .paginacion,
-        .filtros {
-            text-align: center;
-            margin: 20px auto;
-        }
-
-        .volver a,
-        .paginacion a {
-            text-decoration: none;
-            padding: 8px 16px;
-            background: #007bff;
-            color: white;
-            border-radius: 5px;
-            margin: 0 5px;
-        }
-
-        .filtros input[type="text"],
-        .filtros input[type="date"] {
-            padding: 6px;
-            margin: 0 5px;
-        }
-
-        .filtros button {
-            padding: 6px 12px;
-        }
-    </style>
+    </script>
 </head>
 
-<?php if (isset($_GET['msg'])): ?>
-    <div style="background: #d1ffd1; border: 1px solid green; padding: 10px; width: 80%; margin: 20px auto; text-align: center;">
-        <?= htmlspecialchars($_GET['msg']) ?>
-    </div>
-<?php endif; ?>
-
 <body>
-    <div style="text-align: right; margin: 20px; padding-right: 30px;">
-        <a href="/qsl_virtual/public/index.php?view=admin/management/dashboard" style="text-decoration: none; padding: 8px 16px; background: #28a745; color: white; border-radius: 5px;">
-            ⬅ Volver al Dashboard
-        </a>
-    </div>
-
-
-    <h2>Eventos Registrados</h2>
-
-    <div class="filtros">
-        <form method="get" action="">
-            <input type="hidden" name="view" value="admin/events/list_events">
-            <input type="text" name="search" placeholder="Buscar por palabra..." value="<?= htmlspecialchars($search) ?>">
-            <input type="date" name="date" value="<?= htmlspecialchars($date_filter) ?>">
-            <button type="submit">Filtrar</button>
-        </form>
-    </div>
-
-    <table>
-        <tr>
-            <th>ID</th>
-            <th>Nombre del Evento</th>
-            <th>Fecha</th>
-            <th>Call</th>
-            <th>Imagen</th>
-            <th>Estado</th>
-            <th>Acciones</th>
-        </tr>
-
-        <?php foreach ($eventos as $evento): ?>
-            <tr>
-                <td><?= $evento['event_id'] ?></td>
-                <td><?= $evento['name_event'] ?></td>
-                <td><?= $evento['date_event'] ?></td>
-                <td><?= $evento['call_event'] ?></td>
-                <td><img src="/qsl_virtual/uploads/<?= $evento['image_event'] ?>" alt="imagen_evento"></td>
-                <td>
-                    <?php if ($evento['status_event'] == 1): ?>
-                        <span style="color: green; font-weight: bold;">Activo</span>
-                    <?php else: ?>
-                        <span style="color: red; font-weight: bold;">Inactivo</span>
-                    <?php endif; ?>
-                </td>
-                <td>
-                    <a href="/qsl_virtual/public/index.php?view=admin/events/edit_event&event_id=<?= $evento['event_id'] ?>">Edit</a><br>
-                    <a href="/qsl_virtual/public/index.php?view=admin/logs/list_logs&event_id=<?= $evento['event_id'] ?>">View Logs</a><br>
-                    <a href="/qsl_virtual/public/index.php?view=admin/logs/load_log&event_id=<?= $evento['event_id'] ?>">Upload Logs (.ADI)</a>
-                </td>
-            </tr>
-        <?php endforeach; ?>
-    </table>
-
-    <div class="paginacion">
-        <?php for ($i = 1; $i <= $total_pages; $i++): ?>
-            <a href="?view=admin/events/list_events&search=<?= urlencode($search) ?>&date=<?= urlencode($date_filter) ?>&page=<?= $i ?>">
-                <?= $i ?>
+    <!-- Navbar -->
+    <nav class="navbar navbar-dark bg-dark bg-opacity-90 px-4">
+        <div class="container-fluid d-flex justify-content-between align-items-center">
+            <span class="navbar-text text-white fw-bold">QSL virtual Ecuador</span>
+            <a href="#" onclick="confirmLogout()" class="btn btn-danger">
+                <i class="bi bi-box-arrow-right"></i> Cerrar sesión
             </a>
-        <?php endfor; ?>
+        </div>
+    </nav>
+
+    <div class="container py-5">
+        <?php if (isset($_GET['msg'])): ?>
+            <div class="alert alert-success text-center"><?= htmlspecialchars($_GET['msg']) ?></div>
+        <?php endif; ?>
+
+        <!-- Filtros y botón crear evento -->
+        <div class="d-flex flex-wrap justify-content-between align-items-center mb-4">
+            <form method="get" class="d-flex flex-wrap gap-2">
+                <input type="hidden" name="view" value="admin/events/list_events">
+                <input type="text" name="search" class="form-control" placeholder="Buscar por palabra..." value="<?= htmlspecialchars($search) ?>">
+                <input type="date" name="date" class="form-control" value="<?= htmlspecialchars($date_filter) ?>">
+                <button type="submit" class="btn btn-primary">
+                    <i class="bi bi-funnel-fill"></i> Filtrar
+                </button>
+            </form>
+            <a href="/qsl_virtual/public/index.php?view=admin/events/crear_evento" class="btn btn-success">
+                <i class="bi bi-plus-circle-fill"></i> Crear nuevo evento
+            </a>
+        </div>
+
+        <!-- Tabla de eventos -->
+        <div class="table-responsive">
+            <table class="table table-bordered table-hover text-center bg-white rounded-3 overflow-hidden shadow">
+                <thead class="table-dark text-white">
+                    <tr>
+                        <th>Nombre del Evento</th>
+                        <th>Fecha</th>
+                        <th>Call</th>
+                        <th>Imagen</th>
+                        <th>🎨 Color</th>
+                        <th>Estado</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php foreach ($eventos as $evento): ?>
+                        <tr>
+                            <td><?= $evento['name_event'] ?></td>
+                            <td><?= $evento['date_event'] ?></td>
+                            <td><?= $evento['call_event'] ?></td>
+                            <td><img src="/qsl_virtual/uploads/<?= $evento['image_event'] ?>" class="img-thumbnail" width="120"></td>
+                            <td>
+                                <div style="width: 40px; height: 25px; margin: auto; border: 1px solid #000; background-color: <?= htmlspecialchars($evento['color_event']) ?>"></div>
+                            </td>
+                            <td>
+                                <?php if ($evento['status_event'] == 1): ?>
+                                    <span class="badge bg-success">Activo</span>
+                                <?php else: ?>
+                                    <span class="badge bg-danger">Inactivo</span>
+                                <?php endif; ?>
+                            </td>
+                            <td>
+                                <div class="d-flex flex-wrap gap-2 justify-content-center">
+                                    <a href="index.php?view=admin/events/edit_event&event_id=<?= $evento['event_id'] ?>"
+                                        class="btn btn-warning btn-sm" title="Editar evento">
+                                        <i class="bi bi-pencil-fill"></i>
+                                    </a>
+
+                                    <a href="index.php?view=admin/logs/list_logs&event_id=<?= $evento['event_id'] ?>"
+                                        class="btn btn-secondary btn-sm" title="Ver logs">
+                                        <i class="bi bi-file-earmark-text-fill"></i>
+                                    </a>
+
+                                    <a href="index.php?view=admin/logs/load_log&event_id=<?= $evento['event_id'] ?>"
+                                        class="btn btn-primary btn-sm" title="Subir logs .ADI">
+                                        <i class="bi bi-upload"></i>
+                                    </a>
+                                </div>
+                            </td>
+
+                        </tr>
+                    <?php endforeach; ?>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Paginación -->
+        <nav class="d-flex justify-content-center mt-4">
+            <ul class="pagination pagination">
+                <?php for ($i = 1; $i <= $total_pages; $i++): ?>
+                    <li class="page-item <?= $i == $page ? 'active' : '' ?>">
+                        <a class="page-link" href="?view=admin/events/list_events&search=<?= urlencode($search) ?>&date=<?= urlencode($date_filter) ?>&page=<?= $i ?>">
+                            <?= $i ?>
+                        </a>
+                    </li>
+                <?php endfor; ?>
+            </ul>
+        </nav>
+
+        <!-- Botón regresar -->
+        <div class="text-center mt-4">
+            <a href="/qsl_virtual/public/index.php?view=admin/management/dashboard" class="btn btn-secondary btn">
+                ⬅ Volver al Dashboard
+            </a>
+            <a href="/qsl_virtual/public/index.php?view=admin/events/statistics_events" class="btn btn-outline-primary btn ms-2">
+                📊 Ver estadísticas
+            </a>
+        </div>
     </div>
-
-    <div class="volver">
-        <a href="/qsl_virtual/public/index.php?view=admin/events/crear_evento">Crear Nuevo Evento</a>
-    </div>
-
-    <a href="/qsl_virtual/public/index.php?view=admin/events/statistics_events">📊 Ver estadísticas</a>
-
 </body>
 
 </html>

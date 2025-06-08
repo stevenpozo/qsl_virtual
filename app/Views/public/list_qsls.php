@@ -16,98 +16,69 @@ $event_id = $_SESSION['event_id'];
 <head>
     <meta charset="UTF-8">
     <title>Resultados de Búsqueda - QSL</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            padding: 20px;
-            background: #f9f9f9;
-        }
+    <meta name="viewport" content="width=device-width, initial-scale=1">
 
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin: 30px auto;
-            background: white;
-        }
-
-        th,
-        td {
-            border: 1px solid #ccc;
-            padding: 12px;
-            text-align: center;
-        }
-
-        th {
-            background-color: #f0f0f0;
-        }
-
-        h2,
-        .volver {
-            text-align: center;
-        }
-
-        .btn {
-            padding: 5px 10px;
-            background: #007bff;
-            color: white;
-            border: none;
-            border-radius: 4px;
-            text-decoration: none;
-        }
-
-        .volver a {
-            text-decoration: none;
-            padding: 10px 20px;
-            background: #28a745;
-            color: white;
-            border-radius: 5px;
-        }
-    </style>
+    <!-- Bootstrap y estilos -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+    <link href="/qsl_virtual/app/Views/styles/list_qsls.css" rel="stylesheet">
 </head>
 
 <body>
-    <h2>Registros encontrados para CALL: <strong><?= htmlspecialchars($call) ?></strong></h2>
+    <!-- Navbar -->
+    <nav class="navbar navbar-dark bg-dark bg-opacity-90 px-4">
+        <div class="container-fluid d-flex justify-content-between align-items-center">
+            <span class="navbar-text text-white fw-bold">QSL Virtual Ecuador</span>
+            <a href="/qsl_virtual/public/index.php?view=admin/management/login" class="btn btn-success">
+                <i class="bi bi-person-circle"></i> Login
+            </a>
+        </div>
+    </nav>
 
-    <table>
-        <thead>
-            <tr>
-                <th>Confirming QSO with</th>
-                <th>Date</th>
-                <th>UTC</th>
-                <th>Band</th>
-                <th>Mode</th>
-                <th>RST (Sent / Recv)</th>
-                <th>Acción</th>
+    <div class="container py-5">
+        <h2 class="text-center text- text-black mb-4">RESGITROS PARA CALL: <strong><?= htmlspecialchars($call) ?></strong></h2>
 
-            </tr>
-        </thead>
-        <tbody>
-            <?php foreach ($logs as $log): ?>
-                <tr>
-                    <td><?= htmlspecialchars($log['call_log']) ?></td>
-                    <td><?= $log['date_log'] ?></td>
-                    <td><?= $log['utc_log'] ?></td>
-                    <td><?= $log['band_log'] ?></td>
-                    <td><?= $log['mode_log'] ?></td>
-                    <td><?= $log['rst_sent_log'] ?> , <?= $log['rst_rcvd_log'] ?></td>
-                    <td>
-                        <form action="index.php?action=generate_single_qsl_diploma" method="post" target="_blank">
-                            <input type="hidden" name="log_id" value="<?= $log['log_id'] ?>">
-                            <label for="color">🎨 Color:</label>
-                            <input type="color" name="color" value="#000000" style="width: 40px; height: 30px; border: none;">
+        <div class="table-responsive">
+            <table class="table table-bordered table-hover text-center bg-white rounded-3 overflow-hidden shadow">
+                <thead class="table-light">
+                    <tr>
+                        <th>Confirming QSO with</th>
+                        <th>Date</th>
+                        <th>UTC</th>
+                        <th>Band</th>
+                        <th>Mode</th>
+                        <th>RST (Sent / Recv)</th>
+                        <th>Acción</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php foreach ($logs as $log): ?>
+                        <tr>
+                            <td><?= htmlspecialchars($log['call_log']) ?></td>
+                            <td><?= $log['date_log'] ?></td>
+                            <td><?= $log['utc_log'] ?></td>
+                            <td><?= $log['band_log'] ?></td>
+                            <td><?= $log['mode_log'] ?></td>
+                            <td><?= $log['rst_sent_log'] ?> , <?= $log['rst_rcvd_log'] ?></td>
+                            <td>
+                                <form action="index.php?action=generate_single_qsl_diploma" method="post" target="_blank">
+                                    <input type="hidden" name="log_id" value="<?= $log['log_id'] ?>">
+                                    <button type="submit" class="btn btn-primary btn-sm">
+                                        <i class="bi bi-award-fill"></i> Obtener diploma
+                                    </button>
+                                </form>
+                            </td>
+                        </tr>
+                    <?php endforeach; ?>
+                </tbody>
+            </table>
+        </div>
 
-                            <button type="submit" class="btn">🎖️ Obtener diploma</button>
-                        </form>
-
-                    </td>
-
-                </tr>
-            <?php endforeach; ?>
-        </tbody>
-    </table>
-
-    <div class="volver">
-        <a href="/qsl_virtual/public/index.php?view=public/search_qsl">🔙 Volver a buscar</a>
+        <div class="text-center mt-4">
+            <a href="/qsl_virtual/public/index.php?view=public/search_qsl" class="btn btn-success btn-lg">
+                <i class="bi bi-arrow-left-circle-fill"></i> Volver a buscar
+            </a>
+        </div>
     </div>
 </body>
 

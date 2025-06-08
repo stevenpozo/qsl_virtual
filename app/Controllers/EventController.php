@@ -9,16 +9,19 @@ class EventController
             $name = $_POST['name_event'];
             $date = $_POST['date_event'];
             $call = $_POST['call_event'];
+            $color = $_POST['color_event'] ?? '#000000';
             $imageName = $_FILES['image_event']['name'];
             $imageTmp = $_FILES['image_event']['tmp_name'];
 
             $model = new EventModel();
 
             // Validar que no exista el mismo call_event
-            if ($model->existsCallSign($call)) {
-                header("Location: /qsl_virtual/public/index.php?view=admin/events/crear_evento&msg=" . urlencode("⚠️ El call sign '$call' ya está registrado."));
+            // Validar que no exista el mismo name_event
+            if ($model->existsCallSign($name)) {
+                header("Location: /qsl_virtual/public/index.php?view=admin/events/crear_evento&msg=" . urlencode("⚠️ El nombre del evento '$name' ya está registrado."));
                 exit;
             }
+
 
             // Guardar imagen
             $path = __DIR__ . '/../../uploads/' . $imageName;
@@ -29,7 +32,8 @@ class EventController
                 'date_event' => $date,
                 'call_event' => $call,
                 'image_event' => $imageName,
-                'status_event' => 1
+                'status_event' => 1,
+                'color_event' => $color
             ]);
 
             if ($success) {
@@ -51,6 +55,7 @@ class EventController
             $date = $_POST['date_event'];
             $call = $_POST['call_event'];
             $status = $_POST['status_event'];
+            $color = $_POST['color_event'] ?? '#000000';
 
             $model = new EventModel();
             $event = $model->getEventById($id);
@@ -64,7 +69,7 @@ class EventController
                 $imageName = $event['image_event'];
             }
 
-            $model->updateEvent($id, $name, $date, $call, $imageName, $status);
+            $model->updateEvent($id, $name, $date, $call, $imageName, $status, $color);
             header("Location: /qsl_virtual/public/index.php?view=admin/events/list_events");
             exit;
         }

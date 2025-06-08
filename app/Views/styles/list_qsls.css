@@ -1,0 +1,48 @@
+/* Fondo difuminado con imagen */
+body {
+    margin: 0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    min-height: 100vh;
+    position: relative;
+    z-index: 0;
+}
+
+body::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: url('https://st4.depositphotos.com/21038662/24626/i/450/depositphotos_246260242-stock-photo-white-gray-texture-background-gray.jpg') no-repeat center center fixed;
+    background-size: cover;
+    backdrop-filter: blur(1.5px);
+    z-index: -1;
+    opacity: 0.8;
+}
+
+/* Título */
+h2 {
+    color: #ffffff;
+    font-weight: 600;
+}
+
+/* Tabla minimalista */
+.table {
+    border-radius: 10px;
+    overflow: hidden;
+    background-color: #fff;
+}
+
+/* Botones */
+.btn-lg {
+    padding: 12px 24px;
+    font-size: 1.1rem;
+    font-weight: bold;
+    border-radius: 10px;
+}
+
+.btn-sm {
+    font-size: 0.9rem;
+    padding: 6px 12px;
+}

@@ -1,22 +1,8 @@
 <?php
 if (session_status() === PHP_SESSION_NONE) session_start();
-if (!isset($_SESSION['username'])) {
-    header('Location: index.php?view=admin/management/login');
+if (!isset($_SESSION['username']) || $_SESSION['role'] !== 'admin') {
+    header("Location: index.php?view=admin/management/login");
     exit();
-}
-require_once(__DIR__ . '/../../../Models/UserModel.php');
-$model = new UserModel();
-
-$userId = $_GET['user_id'] ?? null;
-if (!$userId || !ctype_digit($userId)) {
-    header("Location: index.php?view=admin/management/users&msg=Usuario inválido");
-    exit;
-}
-
-$user = $model->getUserById($userId);
-if (!$user) {
-    header("Location: index.php?view=admin/management/users&msg=Usuario no encontrado");
-    exit;
 }
 ?>
 
@@ -25,15 +11,15 @@ if (!$user) {
 
 <head>
     <meta charset="UTF-8">
-    <title>Editar Usuario</title>
+    <title>CREAR USUARIO</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
     <!-- Bootstrap + Icons -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
 
-    <!-- Estilo personalizado -->
-    <link rel="stylesheet" href="/qsl_virtual/app/Views/styles/edit_user.css">
+    <!-- Estilos personalizados -->
+    <link rel="stylesheet" href="/qsl_virtual/app/Views/styles/create_user.css">
 
     <script>
         function confirmLogout() {
@@ -58,25 +44,27 @@ if (!$user) {
 
     <div class="container py-5">
         <div class="form-box mx-auto">
-            <h2 class="text-center mb-4">✏️ Editar Usuario</h2>
+            <h2 class="text-center mb-4">CREAR USUARIO</h2>
 
-            <form action="index.php?action=update_user" method="POST">
-                <input type="hidden" name="user_id" value="<?= $user['user_id'] ?>">
+            <?php if (isset($_GET['msg'])): ?>
+                <div class="alert alert-success text-center"><?= htmlspecialchars($_GET['msg']) ?></div>
+            <?php endif; ?>
 
+            <form action="index.php?action=create_user" method="POST">
                 <div class="mb-3">
-                    <label class="form-label">Usuario:</label>
-                    <input type="text" name="username" class="form-control" value="<?= htmlspecialchars($user['username_user']) ?>" required>
+                    <label class="form-label">Nombre de usuario</label>
+                    <input type="text" name="username" class="form-control" placeholder="Ej: admin123" required>
                 </div>
 
                 <div class="mb-4">
-                    <label class="form-label">Rol:</label>
-                    <select name="role" class="form-select" required>
-                        <option value="admin" <?= $user['role_user'] === 'admin' ? 'selected' : '' ?>>Admin</option>
-                    </select>
+                    <label class="form-label">Contraseña</label>
+                    <input type="password" name="password" class="form-control" placeholder="••••••••" required>
                 </div>
 
+                <input type="hidden" name="role" value="admin">
+
                 <button type="submit" class="btn btn-primary w-100">
-                    <i class="bi bi-save-fill"></i> Guardar Cambios
+                    <i class="bi bi-person-plus-fill"></i> Crear Usuario
                 </button>
             </form>
 
@@ -87,6 +75,6 @@ if (!$user) {
             </div>
         </div>
     </div>
-</body>
 
+</body>
 </html>

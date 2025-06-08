@@ -1,0 +1,56 @@
+/* Fondo difuminado con imagen */
+body {
+    margin: 0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    min-height: 100vh;
+    position: relative;
+    z-index: 0;
+
+    background: rgba(255, 255, 255, 0.2); /* semitransparente para que se combine con la imagen */
+    backdrop-filter: blur(8px); /* desenfoque sobre el fondo */
+    -webkit-backdrop-filter: blur(8px);
+}
+
+body::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: -2;
+
+    background: url('https://st4.depositphotos.com/21038662/24626/i/450/depositphotos_246260242-stock-photo-white-gray-texture-background-gray.jpg') no-repeat center center fixed;
+    background-size: cover;
+}
+
+/* Título blanco */
+h2 {
+    color: #ffffff;
+    font-weight: 600;
+}
+
+/* Formulario inspirado en imagen */
+.form-container {
+    background: rgba(255, 255, 255, 0.97);
+    padding: 40px;
+    border-radius: 20px;
+    box-shadow: 0 15px 25px rgba(0, 0, 0, 0.25);
+    max-width: 500px;
+}
+
+/* Input y select redondeados */
+.form-control,
+.form-select {
+    border-radius: 10px;
+    padding: 12px;
+    font-size: 1rem;
+}
+
+/* Botón más grande y elegante */
+.btn-lg {
+    padding: 14px;
+    font-size: 1.2rem;
+    font-weight: bold;
+    border-radius: 12px;
+}

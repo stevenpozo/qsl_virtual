@@ -1,0 +1,56 @@
+/* Fondo y desenfoque */
+body {
+    margin: 0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    min-height: 100vh;
+    position: relative;
+    z-index: 0;
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+}
+
+body::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: -1;
+    background: url('https://st4.depositphotos.com/21038662/24626/i/450/depositphotos_246260242-stock-photo-white-gray-texture-background-gray.jpg') no-repeat center center fixed;
+    background-size: cover;
+    opacity: 0.9;
+}
+
+/* Encabezado */
+h2 {
+    color: #ffffff;
+    font-weight: 600;
+}
+
+/* Tarjetas */
+.dashboard-card {
+    background: rgba(255, 255, 255, 0.95);
+    padding: 30px 40px;
+    border-radius: 20px;
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+    color: #333;
+    font-weight: bold;
+    font-size: 1.2rem;
+    text-align: center;
+    width: 220px;
+    transition: all 0.3s ease;
+}
+
+.dashboard-card:hover {
+    background: #e3f2fd;
+    transform: translateY(-5px);
+}
+
+.dashboard-card i {
+    font-size: 2.2rem;
+    margin-bottom: 10px;
+    display: block;
+    color: #0d6efd;
+}

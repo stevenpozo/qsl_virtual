@@ -1,0 +1,31 @@
+/* Fondo difuminado con imagen */
+body {
+    margin: 0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    min-height: 100vh;
+    position: relative;
+    z-index: 0;
+}
+
+body::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: url('https://st4.depositphotos.com/21038662/24626/i/450/depositphotos_246260242-stock-photo-white-gray-texture-background-gray.jpg') no-repeat center center fixed;
+    background-size: cover;
+    backdrop-filter: blur(6px);
+    opacity: 0.85;
+    z-index: -1;
+}
+
+/* Contenedor del formulario */
+.form-box {
+    background: rgba(255, 255, 255, 0.95);
+    padding: 40px;
+    border-radius: 16px;
+    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
+    max-width: 450px;
+}

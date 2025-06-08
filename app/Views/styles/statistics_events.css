@@ -1,0 +1,91 @@
+body {
+    margin: 0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    min-height: 100vh;
+    position: relative;
+    z-index: 0;
+
+    background: rgba(255, 255, 255, 0.2); /* semitransparente para que se combine con la imagen */
+    backdrop-filter: blur(8px); /* desenfoque sobre el fondo */
+    -webkit-backdrop-filter: blur(8px);
+}
+
+body::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: -2;
+
+    background: url('https://st4.depositphotos.com/21038662/24626/i/450/depositphotos_246260242-stock-photo-white-gray-texture-background-gray.jpg') no-repeat center center fixed;
+    background-size: cover;
+}
+
+/* Contenedor general */
+.container {
+    max-width: 1200px;
+    margin: auto;
+}
+
+/* Encabezado */
+h2 {
+    font-weight: bold;
+    color: #333;
+    text-align: center;
+}
+
+/* Tabla */
+.table {
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.08);
+    background: white;
+}
+
+.table th {
+    background-color: #343a40;
+    color: white;
+    text-transform: uppercase;
+    font-size: 13px;
+    letter-spacing: 0.5px;
+}
+
+.table td {
+    background-color: #fff;
+    color: #333;
+}
+
+/* Botón volver */
+a.btn.btn-secondary {
+    padding: 10px 20px;
+    font-weight: 500;
+    border-radius: 8px;
+    transition: background-color 0.3s ease;
+}
+
+a.btn.btn-secondary:hover {
+    background-color: #5a6268;
+    color: white;
+}
+
+/* Gráfico */
+canvas {
+    display: block;
+    max-width: 100%;
+    margin: 30px auto 0;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .table th,
+    .table td {
+        font-size: 13px;
+        padding: 10px 6px;
+    }
+
+    h2 {
+        font-size: 20px;
+    }
+}

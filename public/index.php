@@ -16,6 +16,7 @@ $rutas_validas = [
     'admin/management/dashboard' => 'app/Views/admin/management/dashboard.php',
     'admin/management/users' => 'app/Views/admin/management/users.php',
     'admin/management/edit_user' => 'app/Views/admin/management/edit_user.php',
+    'admin/management/create_user' => 'app/Views/admin/management/create_user.php',
 ];
 
 $view = $_GET['view'] ?? 'admin/events/list_events';
@@ -175,10 +176,23 @@ if ($action === 'logout') {
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && $action === 'create_user') {
     require_once(__DIR__ . '/../app/Models/UserModel.php');
     $model = new UserModel();
-    $model->createUser($_POST['username'], $_POST['password'], $_POST['role']);
-    header("Location: index.php?view=admin/users/users");
+
+    $username = $_POST['username'];
+    $password = $_POST['password'];
+    $role = $_POST['role'];
+
+    $existingUser = $model->findByUsername($username);
+
+    if ($existingUser) {
+        header("Location: index.php?view=admin/management/create_user&msg=" . urlencode("⚠️ El usuario '$username' ya existe."));
+        exit;
+    }
+
+    $model->createUser($username, $password, $role);
+    header("Location: index.php?view=admin/management/users&msg=" . urlencode("✅ Usuario creado correctamente."));
     exit;
 }
+
 
 // ✅ Acción: deshabilitar usuario (GET)
 if ($action === 'disable' && isset($_GET['user_id'])) {
@@ -206,10 +220,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $action === 'update_user') {
     header("Location: index.php?view=admin/management/users&msg=Usuario actualizado");
     exit;
 }
-
-
-
-
 
 // ✅ Mostrar la vista correspondiente (último paso)
 if (array_key_exists($view, $rutas_validas)) {

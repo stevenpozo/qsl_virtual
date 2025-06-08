@@ -44,12 +44,6 @@ class QslController
             exit;
         }
 
-        $hexColor = $_POST['color'] ?? '#000000';
-        if (!preg_match('/^#[0-9A-Fa-f]{6}$/', $hexColor)) {
-            $hexColor = '#000000';
-        }
-        list($r, $g, $b) = sscanf($hexColor, "#%02x%02x%02x");
-
         $logModel = new LogModel();
         $log = $logModel->getLogById($logId);
         if (!$log) {
@@ -59,8 +53,10 @@ class QslController
 
         $eventModel = new EventModel();
         $event = $eventModel->getEventById($log['event_id']);
-        $background = __DIR__ . '/../../uploads/' . $event['image_event'];
+        $hexColor = $event['color_event'] ?? '#000000';
+        list($r, $g, $b) = sscanf($hexColor, "#%02x%02x%02x");
 
+        $background = __DIR__ . '/../../uploads/' . $event['image_event'];
         if (ob_get_length()) ob_end_clean();
 
         $pdf = new FPDF('L', 'mm', [140, 90]);

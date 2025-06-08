@@ -10,70 +10,54 @@ if (!isset($_SESSION['username'])) {
 
 <!DOCTYPE html>
 <html lang="es">
-
 <head>
     <meta charset="UTF-8">
     <title>Panel de Administración</title>
-    <style>
-        body {
-            font-family: Arial;
-            background: #f2f2f2;
-            padding: 40px;
-            text-align: center;
-        }
+    <meta name="viewport" content="width=device-width, initial-scale=1">
 
-        .box-container {
-            display: flex;
-            justify-content: center;
-            gap: 30px;
-        }
+    <!-- Bootstrap + Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
 
-        .box {
-            background: white;
-            padding: 30px;
-            border-radius: 10px;
-            box-shadow: 0 0 10px gray;
-            width: 200px;
-            cursor: pointer;
-            text-decoration: none;
-            color: black;
-        }
-
-        .box:hover {
-            background: #e8f5ff;
-        }
-
-        .logout {
-            position: absolute;
-            top: 20px;
-            right: 30px;
-        }
-
-        .logout a {
-            text-decoration: none;
-            background: #dc3545;
-            color: white;
-            padding: 8px 16px;
-            border-radius: 5px;
-            font-weight: bold;
-        }
-
-        .logout a:hover {
-            background: #c82333;
-        }
-    </style>
+    <!-- Estilo personalizado -->
+    <link href="/qsl_virtual/app/Views/styles/dashboard.css" rel="stylesheet">
 </head>
-
 <body>
-    <div class="logout">
-        <a href="/qsl_virtual/public/index.php?action=logout">Cerrar sesión</a>
+
+    <!-- Navbar con Logout -->
+    <nav class="navbar navbar-dark bg-dark bg-opacity-90 px-4">
+        <div class="container-fluid d-flex justify-content-between align-items-center">
+            <span class="navbar-text text-white fw-bold">QSL virtual Ecuador</span>
+            <a href="#" onclick="confirmLogout()" class="btn btn-danger">
+                <i class="bi bi-box-arrow-right"></i> Cerrar sesión
+            </a>
+        </div>
+    </nav>
+
+    <!-- Contenido principal -->
+    <div class="container py-5 text-center">
+        <h2 class="text-black mb-5">Bienvenido  <?= htmlspecialchars($_SESSION['username']) ?></h2>
+
+        <div class="d-flex justify-content-center flex-wrap gap-4">
+            <a href="index.php?view=admin/events/list_events" class="dashboard-card text-decoration-none">
+                <i class="bi bi-calendar-event-fill"></i>
+                <span>Eventos</span>
+            </a>
+
+            <a href="index.php?view=admin/management/users" class="dashboard-card text-decoration-none">
+                <i class="bi bi-people-fill"></i>
+                <span>Gestión de usuarios</span>
+            </a>
+        </div>
     </div>
 
-    <h2>Bienvenido, <?= htmlspecialchars($_SESSION['username']) ?></h2>
-    <div class="box-container">
-        <a href="index.php?view=admin/events/list_events" class="box">📅 Eventos</a>
-        <a href="index.php?view=admin/management/users" class="box">👥 Gestión de usuarios</a>
-    </div>
+    <script>
+        function confirmLogout() {
+            if (confirm("¿Estás seguro de que deseas cerrar sesión?")) {
+                window.location.href = "/qsl_virtual/public/index.php?action=logout";
+            }
+        }
+    </script>
+
 </body>
-
 </html>

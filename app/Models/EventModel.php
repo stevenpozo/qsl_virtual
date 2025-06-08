@@ -13,17 +13,19 @@ class EventModel
 
     public function createEvent($data)
     {
-        $sql = "INSERT INTO eventos (name_event, date_event, call_event, image_event, status_event)
-                VALUES (:name_event, :date_event, :call_event, :image_event, :status_event)";
+        $sql = "INSERT INTO eventos (name_event, date_event, call_event, image_event, status_event, color_event)
+            VALUES (:name_event, :date_event, :call_event, :image_event, :status_event, :color_event)";
         $stmt = $this->conn->prepare($sql);
         return $stmt->execute([
             ':name_event' => $data['name_event'],
             ':date_event' => $data['date_event'],
             ':call_event' => $data['call_event'],
             ':image_event' => $data['image_event'],
-            ':status_event' => $data['status_event']
+            ':status_event' => $data['status_event'],
+            ':color_event' => $data['color_event']
         ]);
     }
+
 
     public function getAllEvents()
     {
@@ -41,15 +43,16 @@ class EventModel
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
 
-    public function updateEvent($id, $name, $date, $call, $image, $status)
+    public function updateEvent($id, $name, $date, $call, $image, $status, $color)
     {
         $sql = "UPDATE eventos SET 
-                name_event = :name,
-                date_event = :date,
-                call_event = :call,
-                image_event = :image,
-                status_event = :status
-            WHERE event_id = :id";
+            name_event = :name,
+            date_event = :date,
+            call_event = :call,
+            image_event = :image,
+            status_event = :status,
+            color_event = :color
+        WHERE event_id = :id";
         $stmt = $this->conn->prepare($sql);
         return $stmt->execute([
             ':name' => $name,
@@ -57,17 +60,20 @@ class EventModel
             ':call' => $call,
             ':image' => $image,
             ':status' => $status,
+            ':color' => $color,
             ':id' => $id
         ]);
     }
 
-    public function existsCallSign($call_event)
+
+    public function existsCallSign($name_event)
     {
-        $sql = "SELECT COUNT(*) FROM eventos WHERE call_event = :call_event";
+        $sql = "SELECT COUNT(*) FROM eventos WHERE LOWER(name_event) = LOWER(:name_event)";
         $stmt = $this->conn->prepare($sql);
-        $stmt->execute([':call_event' => $call_event]);
+        $stmt->execute([':name_event' => $name_event]);
         return $stmt->fetchColumn() > 0;
     }
+
 
     public function countFilteredEvents($search = '', $date = '')
     {
