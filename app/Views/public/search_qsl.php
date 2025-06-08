@@ -52,6 +52,18 @@ $events = $eventModel->getAllEvents();
 </head>
 
 <body>
+
+    <?php if (session_status() === PHP_SESSION_NONE) session_start(); ?>
+    <div style="text-align: right; margin-bottom: 20px;">
+        <?php if (isset($_SESSION['username'])): ?>
+            <a href="/qsl_virtual/public/index.php?view=admin/management/dashboard">Dashboard</a> |
+            <a href="/qsl_virtual/public/index.php?action=logout">Cerrar sesión</a>
+        <?php else: ?>
+            <a href="/qsl_virtual/public/index.php?view=admin/management/login">Login</a>
+        <?php endif; ?>
+    </div>
+
+
     <h2>Buscar tarjeta QSL virtual</h2>
 
     <?php if (isset($_GET['msg'])): ?>

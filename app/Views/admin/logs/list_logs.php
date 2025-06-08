@@ -90,8 +90,8 @@ $totalPages = ceil($total / $limit);
                     <td><?= $log['station_callsign_log'] ?></td>
                     <td><?= $log['status_log'] ? 'Activo' : 'Inactivo' ?></td>
                     <td class="acciones">
-                        <a href="/qsl_virtual/public/index.php?view=admin/logs/edit_log&log_id=<?= $log['log_id'] ?>">✏️</a>
-                        <a href="/qsl_virtual/public/index.php?action=toggle_log_status&log_id=<?= $log['log_id'] ?>&event_id=<?= $eventId ?>">🚫</a>
+                        <a href="/qsl_virtual/public/index.php?view=admin/logs/edit_log&log_id=<?= $log['log_id'] ?>">✏️Editar</a>
+                        <a href="/qsl_virtual/public/index.php?action=toggle_log_status&log_id=<?= $log['log_id'] ?>&event_id=<?= $eventId ?>">🚫Activar o inactivar</a>
                     </td>
                 </tr>
             <?php endforeach; ?>

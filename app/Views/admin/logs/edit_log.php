@@ -1,11 +1,46 @@
 <?php
-require_once(__DIR__ . '/../../../app/Models/LogModel.php');
-$model = new LogModel();
-
+// Ya no necesitas require_once aquí
 $log = $model->getLogById($_GET['log_id']);
 ?>
 
-<h2>Editar Log</h2>
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Editar Log</title>
+    <style>
+        form {
+            width: 90%;
+            margin: auto;
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 10px;
+        }
+
+        input, button {
+            display: block;
+            width: 100%;
+            margin: 10px 0;
+            padding: 10px;
+        }
+
+        .volver {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .volver a {
+            text-decoration: none;
+            background: #007bff;
+            color: white;
+            padding: 8px 16px;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+
+<h2 style="text-align:center;">Editar Log</h2>
+
 <form method="POST" action="/qsl_virtual/public/index.php?action=update_log">
     <input type="hidden" name="log_id" value="<?= $log['log_id'] ?>">
     <input type="hidden" name="event_id" value="<?= $log['event_id'] ?>">
@@ -25,3 +60,10 @@ $log = $model->getLogById($_GET['log_id']);
 
     <button type="submit">Actualizar</button>
 </form>
+
+<div class="volver">
+    <a href="/qsl_virtual/public/index.php?view=admin/logs/list_logs&event_id=<?= $log['event_id'] ?>">← Volver a la lista de logs</a>
+</div>
+
+</body>
+</html>

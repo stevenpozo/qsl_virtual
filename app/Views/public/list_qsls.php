@@ -1,5 +1,5 @@
 <?php
-session_start();
+if (session_status() === PHP_SESSION_NONE) session_start();
 if (!isset($_SESSION['qsls']) || !isset($_SESSION['call']) || !isset($_SESSION['event_id'])) {
     echo "No hay resultados para mostrar.";
     exit;
@@ -67,10 +67,6 @@ $event_id = $_SESSION['event_id'];
 
 <body>
     <h2>Registros encontrados para CALL: <strong><?= htmlspecialchars($call) ?></strong></h2>
-    <form action="/qsl_virtual/public/index.php?action=generate_qsl_diploma" method="post" target="_blank">
-        <button class="btn" type="submit">🎖️ Obtener diploma QSL</button>
-    </form>
-
 
     <table>
         <thead>
@@ -81,6 +77,8 @@ $event_id = $_SESSION['event_id'];
                 <th>Band</th>
                 <th>Mode</th>
                 <th>RST (Sent / Recv)</th>
+                <th>Acción</th>
+
             </tr>
         </thead>
         <tbody>
@@ -91,7 +89,18 @@ $event_id = $_SESSION['event_id'];
                     <td><?= $log['utc_log'] ?></td>
                     <td><?= $log['band_log'] ?></td>
                     <td><?= $log['mode_log'] ?></td>
-                    <td><?= $log['rst_sent_log'] ?> / <?= $log['rst_rcvd_log'] ?></td>
+                    <td><?= $log['rst_sent_log'] ?> , <?= $log['rst_rcvd_log'] ?></td>
+                    <td>
+                        <form action="index.php?action=generate_single_qsl_diploma" method="post" target="_blank">
+                            <input type="hidden" name="log_id" value="<?= $log['log_id'] ?>">
+                            <label for="color">🎨 Color:</label>
+                            <input type="color" name="color" value="#000000" style="width: 40px; height: 30px; border: none;">
+
+                            <button type="submit" class="btn">🎖️ Obtener diploma</button>
+                        </form>
+
+                    </td>
+
                 </tr>
             <?php endforeach; ?>
         </tbody>

@@ -1,6 +1,8 @@
 <?php
 require_once(__DIR__ . '/../Models/LogModel.php');
-session_start();
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
 
 class QslController
 {
@@ -30,65 +32,55 @@ class QslController
         exit;
     }
 
-    public function generateQslDiploma()
+    public function generateSingleQslDiploma()
     {
         require_once(__DIR__ . '/../Libraries/fpdf/fpdf.php');
-        if (!isset($_SESSION['qsls'], $_SESSION['event_id'])) {
-            echo "No hay registros para generar el diploma.";
+        require_once(__DIR__ . '/../Models/LogModel.php');
+        require_once(__DIR__ . '/../Models/EventModel.php');
+
+        $logId = $_POST['log_id'] ?? null;
+        if (!$logId || !ctype_digit($logId)) {
+            echo "ID de log inválido.";
             exit;
         }
 
-        $logs = $_SESSION['qsls'];
-        $eventId = $_SESSION['event_id'];
+        $hexColor = $_POST['color'] ?? '#000000';
+        if (!preg_match('/^#[0-9A-Fa-f]{6}$/', $hexColor)) {
+            $hexColor = '#000000';
+        }
+        list($r, $g, $b) = sscanf($hexColor, "#%02x%02x%02x");
 
-        require_once(__DIR__ . '/../Models/EventModel.php');
-        $eventModel = new EventModel();
-        $event = $eventModel->getEventById($eventId);
-        $background = __DIR__ . '/../../uploads/' . $event['image_event'];
-
-        $pdf = new FPDF('L', 'mm', [140, 90]); // 14x9 cm
-        $pdf->SetAutoPageBreak(false); // <== esto es clave
-
-        $pdf->AddPage();
-
-        // Imagen de fondo
-        $pdf->Image($background, 0, 0, 140, 90);
-
-        // Tabla sobre la imagen
-        $pdf->SetFont('Arial', 'B', 6);
-        $pdf->SetTextColor(0, 0, 0);
-        $pdf->SetXY(5, 70); // Inicia tabla a los 70 mm de alto
-
-        // Cabecera
-        $pdf->Cell(35, 5, 'Confirming QSO with', 1);
-        $pdf->Cell(20, 5, 'Date', 1);
-        $pdf->Cell(15, 5, 'UTC', 1);
-        $pdf->Cell(15, 5, 'Band', 1);
-        $pdf->Cell(15, 5, 'Mode', 1);
-        $pdf->Cell(30, 5, 'RST (sent/recv)', 1);
-        $pdf->Ln();
-
-        // Contenido limitado
-        $pdf->SetFont('Arial', '', 5);
-        $y = $pdf->GetY();
-        $maxY = 86; // borde inferior menos 4 mm
-
-        foreach ($logs as $log) {
-            if ($y + 5 > $maxY) break; // solo imprime si no se pasa
-
-            $pdf->SetX(5);
-            $pdf->Cell(35, 5, $log['call_log'], 1);
-            $pdf->Cell(20, 5, $log['date_log'], 1);
-            $pdf->Cell(15, 5, $log['utc_log'], 1);
-            $pdf->Cell(15, 5, $log['band_log'], 1);
-            $pdf->Cell(15, 5, $log['mode_log'], 1);
-            $pdf->Cell(30, 5, $log['rst_sent_log'] . ' / ' . $log['rst_rcvd_log'], 1);
-            $pdf->Ln();
-            $y += 5;
+        $logModel = new LogModel();
+        $log = $logModel->getLogById($logId);
+        if (!$log) {
+            echo "Log no encontrado.";
+            exit;
         }
 
+        $eventModel = new EventModel();
+        $event = $eventModel->getEventById($log['event_id']);
+        $background = __DIR__ . '/../../uploads/' . $event['image_event'];
 
-        $pdf->Output('I', 'diploma_qsl.pdf');
+        if (ob_get_length()) ob_end_clean();
+
+        $pdf = new FPDF('L', 'mm', [140, 90]);
+        $pdf->SetAutoPageBreak(false);
+        $pdf->AddPage();
+        $pdf->Image($background, 0, 0, 140, 90);
+
+        $pdf->SetXY(5, 74);
+        $pdf->SetFont('Arial', '', 10);
+        $pdf->SetTextColor($r, $g, $b);
+        $pdf->SetX(5);
+
+        $pdf->Cell(32, 5, $log['call_log'], 0, 0, 'C');
+        $pdf->Cell(20, 5, $log['date_log'], 0, 0, 'C');
+        $pdf->Cell(20, 5, $log['utc_log'], 0, 0, 'C');
+        $pdf->Cell(19, 5, $log['band_log'], 0, 0, 'C');
+        $pdf->Cell(19, 5, $log['mode_log'], 0, 0, 'C');
+        $pdf->Cell(19, 5, $log['rst_sent_log'] . ' , ' . $log['rst_rcvd_log'], 0, 0, 'C');
+
+        $pdf->Output('I', 'diploma_qsl_individual.pdf');
         exit;
     }
 }
