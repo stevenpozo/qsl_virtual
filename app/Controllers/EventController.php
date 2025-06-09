@@ -3,6 +3,8 @@ require_once(__DIR__ . '/../Models/EventModel.php');
 
 class EventController
 {
+    // Maneja la creación de un nuevo evento. Valida duplicados por nombre,
+    // guarda la imagen en el servidor y registra el evento en la base de datos.
     public function createEvent()
     {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -47,6 +49,9 @@ class EventController
     }
 
 
+    // Permite la edición de un evento existente.
+    // Actualiza datos como nombre, fecha, call sign, color, estado e imagen.
+    // Si no se sube una nueva imagen, conserva la actual.
     public function editEvent()
     {
         if (isset($_POST['edit_event'])) {
@@ -75,6 +80,9 @@ class EventController
         }
     }
 
+    // Muestra estadísticas por evento.
+    // Recupera todos los eventos, calcula estadísticas por cada uno
+    // y los envía a la vista de estadísticas.
     public function showStatistics()
     {
         $eventModel = new EventModel();

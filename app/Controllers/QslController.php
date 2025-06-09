@@ -6,6 +6,8 @@ if (session_status() === PHP_SESSION_NONE) {
 
 class QslController
 {
+    // Busca todos los logs asociados a un indicativo (CALL) y un evento específico.
+    // Si se encuentran logs válidos, los guarda en sesión para mostrar en la vista
     public function searchLogs()
     {
         $eventId = $_POST['event_id'] ?? null;
@@ -32,6 +34,8 @@ class QslController
         exit;
     }
 
+    // Genera un diploma QSL en PDF para un solo contacto (log).
+    // Usa como fondo la imagen del evento y escribe sobre ella los datos del log.
     public function generateSingleQslDiploma()
     {
         require_once(__DIR__ . '/../Libraries/fpdf/fpdf.php');

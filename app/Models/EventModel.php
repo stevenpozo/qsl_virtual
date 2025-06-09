@@ -5,12 +5,14 @@ class EventModel
 {
     private $conn;
 
+    // Constructor que inicializa la conexión a la base de datos.
     public function __construct()
     {
         $database = new Database();
         $this->conn = $database->getConnection();
     }
 
+    // Inserta un nuevo evento en la base de datos con los datos proporcionados.
     public function createEvent($data)
     {
         $sql = "INSERT INTO eventos (name_event, date_event, call_event, image_event, status_event, color_event)
@@ -26,7 +28,7 @@ class EventModel
         ]);
     }
 
-
+    // Obtiene todos los eventos ordenados por fecha descendente.
     public function getAllEvents()
     {
         $sql = "SELECT * FROM eventos ORDER BY date_event DESC";
@@ -35,6 +37,7 @@ class EventModel
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
+    // Recupera los datos de un evento específico por su ID.
     public function getEventById($id)
     {
         $sql = "SELECT * FROM eventos WHERE event_id = :id";
@@ -43,6 +46,8 @@ class EventModel
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
 
+
+    // Actualiza los datos de un evento existente por su ID.
     public function updateEvent($id, $name, $date, $call, $image, $status, $color)
     {
         $sql = "UPDATE eventos SET 
@@ -66,6 +71,7 @@ class EventModel
     }
 
 
+    // Verifica si ya existe un evento con el mismo nombre (insensible a mayúsculas/minúsculas).
     public function existsCallSign($name_event)
     {
         $sql = "SELECT COUNT(*) FROM eventos WHERE LOWER(name_event) = LOWER(:name_event)";
@@ -75,6 +81,7 @@ class EventModel
     }
 
 
+    // Cuenta cuántos eventos coinciden con filtros de búsqueda por nombre/call o fecha.
     public function countFilteredEvents($search = '', $date = '')
     {
         $sql = "SELECT COUNT(*) FROM eventos WHERE 1=1";
@@ -94,6 +101,7 @@ class EventModel
         return $stmt->fetchColumn();
     }
 
+    // Devuelve una lista de eventos filtrados por búsqueda y/o fecha, con paginación.
     public function getFilteredEvents($search = '', $date = '', $limit = 20, $offset = 0)
     {
         $sql = "SELECT * FROM eventos WHERE 1=1";

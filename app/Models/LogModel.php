@@ -5,12 +5,14 @@ class LogModel
 {
     private $conn;
 
+    // Constructor que inicializa la conexión a la base de datos.
     public function __construct()
     {
         $database = new Database();
         $this->conn = $database->getConnection();
     }
 
+    // Inserta un nuevo registro de contacto (QSO) en la base de datos.
     public function insertLog($data)
     {
         $sql = "INSERT INTO logs (event_id, call_log, date_log, utc_log, time_off_log, band_log, mode_log, rst_rcvd_log, rst_sent_log, freq_log, gridsquare_log, my_gridsquare_log, station_callsign_log, comment_log, status_log)
@@ -35,6 +37,7 @@ class LogModel
         ]);
     }
 
+    // Verifica si ya existe un log con los mismos datos para evitar duplicados.
     public function existsLog($event_id, $data)
     {
         $sql = "SELECT COUNT(*) FROM logs WHERE 
@@ -61,6 +64,7 @@ class LogModel
         return $stmt->fetchColumn() > 0;
     }
 
+    // Recupera los logs asociados a un evento, con filtros por indicativo o fecha y paginación.
     public function getLogsByEvent($eventId, $search = '', $date = '', $limit = 20, $offset = 0)
     {
         $sql = "SELECT * FROM logs WHERE event_id = :event_id";
@@ -90,6 +94,7 @@ class LogModel
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
+    // Cuenta la cantidad de logs para un evento con filtros por indicativo o fecha.
     public function countLogsByEvent($eventId, $search = '', $date = '')
     {
         $sql = "SELECT COUNT(*) FROM logs WHERE event_id = :event_id";
@@ -110,6 +115,7 @@ class LogModel
         return $stmt->fetchColumn();
     }
 
+    // Cambia el estado (activo/inactivo) de un log según su ID.
     public function toggleStatus($logId)
     {
         $sql = "UPDATE logs SET status_log = 1 - status_log WHERE log_id = :log_id";
@@ -117,6 +123,7 @@ class LogModel
         $stmt->execute([':log_id' => $logId]);
     }
 
+    // Recupera un log específico por su ID.
     public function getLogById($logId)
     {
         $stmt = $this->conn->prepare("SELECT * FROM logs WHERE log_id = :log_id");
@@ -124,6 +131,7 @@ class LogModel
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
 
+    // Actualiza los datos de un log existente.
     public function updateLog($data)
     {
         $sql = "UPDATE logs SET 
@@ -145,11 +153,13 @@ class LogModel
         return $stmt->execute($data);
     }
 
+    // Retorna el objeto de conexión a la base de datos 
     public function getConnection()
     {
         return $this->conn;
     }
 
+    // Calcula estadísticas básicas para un evento: total de logs, indicativos únicos, última fecha, banda y modo más usados.
     public function getStatsByEvent($event_id)
     {
         $stmt = $this->conn->prepare("
@@ -165,6 +175,7 @@ class LogModel
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
 
+    // Devuelve todos los logs activos de un evento para un indicativo específico.
     public function getLogsByEventAndCall($event_id, $call)
     {
         $sql = "SELECT * FROM logs 
