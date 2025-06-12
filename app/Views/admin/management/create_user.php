@@ -1,4 +1,6 @@
 <?php
+require_once(__DIR__ . '/../../../../config/constants.php');
+
 if (session_status() === PHP_SESSION_NONE) session_start();
 if (!isset($_SESSION['username']) || $_SESSION['role'] !== 'admin') {
     header("Location: index.php?view=admin/management/login");
@@ -19,15 +21,18 @@ if (!isset($_SESSION['username']) || $_SESSION['role'] !== 'admin') {
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
 
     <!-- Estilos personalizados -->
-    <link rel="stylesheet" href="/qsl_virtual/app/Views/styles/create_user.css">
+    <link rel="stylesheet" href="<?= BASE_URL ?>/styles/create_user.css">
 
     <script>
+        const baseUrl = "<?= BASE_URL ?>";
+
         function confirmLogout() {
             if (confirm("¿Estás seguro de que deseas cerrar sesión?")) {
-                window.location.href = "/qsl_virtual/index.php?action=logout";
+                window.location.href = baseUrl + "/index.php?action=logout";
             }
         }
     </script>
+
 </head>
 
 <body>
@@ -69,7 +74,7 @@ if (!isset($_SESSION['username']) || $_SESSION['role'] !== 'admin') {
             </form>
 
             <div class="text-center mt-4">
-                <a href="index.php?view=admin/management/users" class="btn btn-secondary">
+                <a href="<?= BASE_URL ?>/index.php?view=admin/management/users" class="btn btn-secondary">
                     ← Volver a la gestión
                 </a>
             </div>
@@ -77,4 +82,5 @@ if (!isset($_SESSION['username']) || $_SESSION['role'] !== 'admin') {
     </div>
 
 </body>
+
 </html>

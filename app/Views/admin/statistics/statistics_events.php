@@ -1,7 +1,11 @@
-<?php if (!isset($events)): ?>
+<?php
+require_once(__DIR__ . '/../../../../config/constants.php');
+
+if (!isset($events)): ?>
     <p>Error: no se cargaron los eventos.</p>
 <?php exit;
 endif; ?>
+
 
 <!DOCTYPE html>
 <html lang="es">
@@ -15,14 +19,17 @@ endif; ?>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
 
     <!-- Estilos personalizados -->
-    <link rel="stylesheet" href="/qsl_virtual/app/Views/styles/statistics_events.css">
+    <link rel="stylesheet" href="<?= BASE_URL ?>/styles/statistics_events.css">
     <script>
+        const baseUrl = "<?= BASE_URL ?>";
+
         function confirmLogout() {
             if (confirm("¿Estás seguro de que deseas cerrar sesión?")) {
-                window.location.href = "/qsl_virtual/index.php?action=logout";
+                window.location.href = baseUrl + "/index.php?action=logout";
             }
         }
     </script>
+
 </head>
 
 <body>
@@ -75,7 +82,7 @@ endif; ?>
 
         <!-- Botón volver -->
         <div class="text-center mt-4">
-            <a href="/qsl_virtual/index.php?view=admin/events/list_events" class="btn btn-secondary">
+            <a href="<?= BASE_URL ?>/index.php?view=admin/events/list_events" class="btn btn-secondary">
                 ← Volver a Eventos
             </a>
         </div>

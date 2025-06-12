@@ -1,4 +1,6 @@
 <?php
+require_once(__DIR__ . '/../../../../config/constants.php');
+
 if (session_status() === PHP_SESSION_NONE) session_start();
 if (!isset($_SESSION['username'])) {
     header("Location: index.php?view=admin/management/login");
@@ -23,15 +25,18 @@ if (!$log) {
     <!-- Bootstrap + Icons -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
-    <link href="/qsl_virtual/app/Views/styles/edit_log.css" rel="stylesheet">
+    <link href="<?= BASE_URL ?>/styles/edit_log.css" rel="stylesheet">
 
     <script>
+        const baseUrl = "<?= BASE_URL ?>";
+
         function confirmLogout() {
             if (confirm("¿Estás seguro de que deseas cerrar sesión?")) {
-                window.location.href = "/qsl_virtual/index.php?action=logout";
+                window.location.href = baseUrl + "/index.php?action=logout";
             }
         }
     </script>
+
 </head>
 
 <body>
@@ -49,7 +54,7 @@ if (!$log) {
     <div class="container py-5">
         <div class="form-box mx-auto">
 
-            <form method="POST" action="/qsl_virtual/index.php?action=update_log">
+            <form method="POST" action="<?= BASE_URL ?>/index.php?action=update_log">
                 <h2 class="text-center text-black mb-4">EDITAR LOG</h2>
 
                 <input type="hidden" name="log_id" value="<?= $log['log_id'] ?>">
@@ -121,7 +126,7 @@ if (!$log) {
             </form>
 
             <div class="text-center mt-4">
-                <a href="/qsl_virtual/index.php?view=admin/logs/list_logs&event_id=<?= $log['event_id'] ?>" class="btn btn-secondary">
+                <a href="<?= BASE_URL ?>/index.php?view=admin/logs/list_logs&event_id=<?= $log['event_id'] ?>" class="btn btn-secondary">
                     ← Volver a la lista de logs
                 </a>
             </div>

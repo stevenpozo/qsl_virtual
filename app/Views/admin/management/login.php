@@ -1,4 +1,6 @@
 <?php
+require_once(__DIR__ . '/../../../../config/constants.php');
+
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
@@ -10,6 +12,7 @@ if (isset($_SESSION['username'])) {
 
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
     <title>Iniciar Sesión</title>
@@ -20,12 +23,13 @@ if (isset($_SESSION['username'])) {
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
 
     <!-- Estilo personalizado -->
-    <link href="/qsl_virtual/app/Views/styles/login.css" rel="stylesheet">
+    <link href="<?= BASE_URL ?>/styles/login.css" rel="stylesheet">
 </head>
+
 <body>
 
     <!-- Navbar -->
-   <nav class="navbar navbar-dark bg-dark bg-opacity-90 px-4">
+    <nav class="navbar navbar-dark bg-dark bg-opacity-90 px-4">
         <div class="container-fluid d-flex justify-content-between align-items-center">
             <span class="navbar-text text-white fw-bold">QSL Virtual Ecuador</span>
         </div>
@@ -55,11 +59,12 @@ if (isset($_SESSION['username'])) {
             </form>
 
             <div class="text-center mt-4">
-                <a class="btn btn-secondary btn-sm" href="/qsl_virtual/index.php?view=public/search_qsl">
+                <a class="btn btn-secondary btn-sm" href="<?= BASE_URL ?>/index.php?view=public/search_qsl">
                     ← Volver a búsqueda QSL
                 </a>
             </div>
         </div>
     </div>
 </body>
+
 </html>

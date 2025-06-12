@@ -1,5 +1,7 @@
 <?php
 require_once(__DIR__ . '/../Models/EventModel.php');
+require_once(__DIR__ . '/../../config/constants.php');
+
 
 class EventController
 {
@@ -20,7 +22,7 @@ class EventController
             // Validar que no exista el mismo call_event
             // Validar que no exista el mismo name_event
             if ($model->existsCallSign($name)) {
-                header("Location: /qsl_virtual/index.php?view=admin/events/crear_evento&msg=" . urlencode("⚠️ El nombre del evento '$name' ya está registrado."));
+                header("Location: " . BASE_URL . "/index.php?view=admin/events/crear_evento&msg=" . urlencode("⚠️ El nombre del evento '$name' ya está registrado."));
                 exit;
             }
 
@@ -39,9 +41,9 @@ class EventController
             ]);
 
             if ($success) {
-                header('Location: /qsl_virtual/index.php?view=admin/events/list_events&msg=' . urlencode('✅ Event created successfully.'));
+                header('Location: ' . BASE_URL . '/index.php?view=admin/events/list_events&msg=' . urlencode('✅ Event created successfully.'));
             } else {
-                header('Location: /qsl_virtual/index.php?view=admin/events/crear_evento&msg=' . urlencode('❌ Error saving event.'));
+                header('Location: ' . BASE_URL . '/index.php?view=admin/events/crear_evento&msg=' . urlencode('❌ Error saving event.'));
             }
 
             exit;
@@ -75,7 +77,7 @@ class EventController
             }
 
             $model->updateEvent($id, $name, $date, $call, $imageName, $status, $color);
-            header("Location: /qsl_virtual/index.php?view=admin/events/list_events");
+            header("Location: " . BASE_URL . "/index.php?view=admin/events/list_events");
             exit;
         }
     }
@@ -109,7 +111,7 @@ class EventController
                 ? urlencode("✅ Evento eliminado correctamente.")
                 : urlencode("❌ Error al eliminar el evento.");
 
-            header("Location: /qsl_virtual/index.php?view=admin/events/list_events&msg={$msg}");
+            header("Location: " . BASE_URL . "/index.php?view=admin/events/list_events&msg={$msg}");
             exit;
         }
     }

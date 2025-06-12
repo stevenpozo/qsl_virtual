@@ -1,4 +1,6 @@
 <?php
+require_once(__DIR__ . '/../../../../config/constants.php');
+
 if (session_status() === PHP_SESSION_NONE) session_start();
 if (!isset($_SESSION['username'])) {
     header("Location: index.php?view=admin/management/login");
@@ -11,6 +13,7 @@ $eventId = $_GET['event_id'] ?? null;
 
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
     <title>Cargar archivo ADI</title>
@@ -19,16 +22,20 @@ $eventId = $_GET['event_id'] ?? null;
     <!-- Bootstrap + Icons -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
-    <link href="/qsl_virtual/app/Views/styles/load_log.css" rel="stylesheet">
+    <link href="<?= BASE_URL ?>/styles/load_log.css" rel="stylesheet">
 
     <script>
+        const baseUrl = "<?= BASE_URL ?>";
+
         function confirmLogout() {
             if (confirm("¿Estás seguro de que deseas cerrar sesión?")) {
-                window.location.href = "/qsl_virtual/index.php?action=logout";
+                window.location.href = baseUrl + "/index.php?action=logout";
             }
         }
     </script>
+
 </head>
+
 <body>
 
     <!-- Navbar -->
@@ -46,7 +53,7 @@ $eventId = $_GET['event_id'] ?? null;
         <div class="form-box mx-auto">
             <h2 class="text-center mb-4">Cargar archivo .ADI</h2>
 
-            <form action="/qsl_virtual/app/Controllers/LogController.php" method="post" enctype="multipart/form-data">
+            <form action="<?= BASE_URL ?>/app/Controllers/LogController.php" method="post" enctype="multipart/form-data">
                 <?php if ($eventId): ?>
                     <?php $evento = $model->getEventById($eventId); ?>
                     <p><strong>Evento seleccionado:</strong> <?= $evento['name_event'] ?> (<?= $evento['date_event'] ?>)</p>
@@ -75,11 +82,12 @@ $eventId = $_GET['event_id'] ?? null;
             </form>
 
             <div class="text-center mt-4">
-                <a href="/qsl_virtual/index.php?view=admin/events/list_events" class="btn btn-secondary">
+                <a href="<?= BASE_URL ?>/index.php?view=admin/events/list_events" class="btn btn-secondary">
                     ← Volver a la lista de eventos
                 </a>
             </div>
         </div>
     </div>
 </body>
+
 </html>

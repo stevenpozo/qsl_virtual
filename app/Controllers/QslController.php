@@ -1,5 +1,8 @@
 <?php
 require_once(__DIR__ . '/../Models/LogModel.php');
+require_once(__DIR__ . '/../../config/constants.php'); 
+
+
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
@@ -14,7 +17,7 @@ class QslController
         $callSign = strtoupper(trim($_POST['call'] ?? ''));
 
         if (!$eventId || !$callSign) {
-            header("Location: /qsl_virtual/index.php?view=public/search_qsl&msg=" . urlencode("Missing data."));
+            header("Location: " . BASE_URL . "/index.php?view=public/search_qsl&msg=" . urlencode("Missing data."));
             exit;
         }
 
@@ -22,7 +25,7 @@ class QslController
         $logs = $logModel->getLogsByEventAndCall($eventId, $callSign);
 
         if (count($logs) === 0) {
-            header("Location: /qsl_virtual/index.php?view=public/search_qsl&msg=" . urlencode("❌ No records found for CALL '$callSign'"));
+            header("Location: " . BASE_URL . "/index.php?view=public/search_qsl&msg=" . urlencode("❌ No records found for CALL '$callSign'"));
             exit;
         }
 
@@ -30,7 +33,7 @@ class QslController
         $_SESSION['call'] = $callSign;
         $_SESSION['event_id'] = $eventId;
 
-        header("Location: /qsl_virtual/index.php?view=public/list_qsls");
+        header("Location: " . BASE_URL . "/index.php?view=public/list_qsls");
         exit;
     }
 
@@ -39,7 +42,6 @@ class QslController
     public function generateSingleQslDiploma()
     {
         require_once(__DIR__ . '/../Libraries/fpdf/fpdf.php');
-        require_once(__DIR__ . '/../Models/LogModel.php');
         require_once(__DIR__ . '/../Models/EventModel.php');
 
         $logId = $_POST['log_id'] ?? null;

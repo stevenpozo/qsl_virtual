@@ -1,4 +1,6 @@
 <?php
+require_once(__DIR__ . '/../../../../config/constants.php');
+
 if (session_status() === PHP_SESSION_NONE) session_start();
 if (!isset($_SESSION['username'])) {
     header("Location: index.php?view=admin/management/login");
@@ -21,6 +23,7 @@ if (!$evento) {
 
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
     <title>Editar Evento</title>
@@ -31,15 +34,18 @@ if (!$evento) {
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
 
     <!-- Estilo personalizado -->
-    <link href="/qsl_virtual/app/Views/styles/edit_event.css" rel="stylesheet">
+    <link href="<?= BASE_URL ?>/styles/edit_event.css" rel="stylesheet">
 
     <script>
+        const baseUrl = "<?= BASE_URL ?>";
+
         function confirmLogout() {
             if (confirm("¿Estás seguro de que deseas cerrar sesión?")) {
-                window.location.href = "/qsl_virtual/index.php?action=logout";
+                window.location.href = baseUrl + "/index.php?action=logout";
             }
         }
     </script>
+
 </head>
 
 <body>
@@ -58,7 +64,7 @@ if (!$evento) {
         <div class="form-box mx-auto">
             <h2 class="text-center mb-4">EDITAR EVENTO</h2>
 
-            <form action="/qsl_virtual/index.php?view=admin/events/edit_event" method="post" enctype="multipart/form-data">
+            <form action="<?= BASE_URL ?>/index.php?view=admin/events/edit_event" method="post" enctype="multipart/form-data">
                 <input type="hidden" name="event_id" value="<?= $evento['event_id'] ?>">
 
                 <div class="mb-3">
@@ -79,7 +85,7 @@ if (!$evento) {
                 <div class="mb-4 row align-items-center">
                     <div class="col-md-5 text-center mb-3 mb-md-0">
                         <label class="form-label">Imagen actual:</label><br>
-                        <img src="/qsl_virtual/uploads/<?= $evento['image_event'] ?>" class="img-thumbnail" width="150">
+                        <img src="<?= BASE_URL ?>/uploads/<?= $evento['image_event'] ?>" class="img-thumbnail" width="150">
                     </div>
                     <div class="col-md-7">
                         <label class="form-label">Cambiar imagen (opcional):</label>
@@ -106,11 +112,12 @@ if (!$evento) {
             </form>
 
             <div class="text-center mt-4">
-                <a href="/qsl_virtual/index.php?view=admin/events/list_events" class="btn btn-secondary">
+                <a href="<?= BASE_URL ?>/index.php?view=admin/events/list_events" class="btn btn-secondary">
                     ← Volver a la lista de eventos
                 </a>
             </div>
         </div>
     </div>
 </body>
+
 </html>

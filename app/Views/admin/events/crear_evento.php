@@ -1,4 +1,6 @@
 <?php
+require_once(__DIR__ . '/../../../../config/constants.php');
+
 if (session_status() === PHP_SESSION_NONE) session_start();
 if (!isset($_SESSION['username'])) {
     header("Location: index.php?view=admin/management/login");
@@ -8,6 +10,7 @@ if (!isset($_SESSION['username'])) {
 
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
     <title>Crear Evento</title>
@@ -18,15 +21,18 @@ if (!isset($_SESSION['username'])) {
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
 
     <!-- Estilos personalizados -->
-    <link href="/qsl_virtual/app/Views/styles/crear_evento.css" rel="stylesheet">
+    <link href="<?= BASE_URL ?>/styles/crear_evento.css" rel="stylesheet">
 
     <script>
+        const baseUrl = "<?= BASE_URL ?>";
+
         function confirmLogout() {
             if (confirm("¿Estás seguro de que deseas cerrar sesión?")) {
-                window.location.href = "/qsl_virtual/index.php?action=logout";
+                window.location.href = baseUrl + "/index.php?action=logout";
             }
         }
     </script>
+
 </head>
 
 <body>
@@ -49,7 +55,7 @@ if (!isset($_SESSION['username'])) {
                 <div class="alert alert-danger text-center"><?= htmlspecialchars($_GET['msg']) ?></div>
             <?php endif; ?>
 
-            <form action="/qsl_virtual/index.php?action=create_event" method="post" enctype="multipart/form-data">
+            <form action="<?= BASE_URL ?>/index.php?action=create_event" method="post" enctype="multipart/form-data">
                 <div class="mb-3">
                     <label class="form-label">Nombre del Evento:</label>
                     <input type="text" name="name_event" class="form-control" required>
@@ -81,11 +87,12 @@ if (!isset($_SESSION['username'])) {
             </form>
 
             <div class="text-center mt-4">
-                <a href="/qsl_virtual/index.php?view=admin/events/list_events" class="btn btn-secondary">
+                <a href="<?= BASE_URL ?>/index.php?view=admin/events/list_events" class="btn btn-secondary">
                     ⬅ Volver a lista de eventos
                 </a>
             </div>
         </div>
     </div>
 </body>
+
 </html>

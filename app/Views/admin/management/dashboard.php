@@ -1,4 +1,6 @@
 <?php
+require_once(__DIR__ . '/../../../../config/constants.php');
+
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
@@ -20,7 +22,7 @@ if (!isset($_SESSION['username'])) {
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
 
     <!-- Estilo personalizado -->
-    <link href="/qsl_virtual/app/Views/styles/dashboard.css" rel="stylesheet">
+    <link href="<?= BASE_URL ?>/styles/dashboard.css" rel="stylesheet">
 </head>
 <body>
 

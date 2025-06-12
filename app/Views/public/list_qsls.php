@@ -1,9 +1,13 @@
 <?php
+require_once(__DIR__ . '/../../../config/constants.php');
 if (session_status() === PHP_SESSION_NONE) session_start();
+
 if (!isset($_SESSION['qsls']) || !isset($_SESSION['call']) || !isset($_SESSION['event_id'])) {
     echo "No hay resultados para mostrar.";
     exit;
 }
+
+
 
 $logs = $_SESSION['qsls'];
 $call = $_SESSION['call'];
@@ -21,7 +25,7 @@ $event_id = $_SESSION['event_id'];
     <!-- Bootstrap y estilos -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
-    <link href="/qsl_virtual/app/Views/styles/list_qsls.css" rel="stylesheet">
+    <link href="<?= BASE_URL ?>/styles/list_qsls.css" rel="stylesheet">
 </head>
 
 <body>
@@ -29,14 +33,14 @@ $event_id = $_SESSION['event_id'];
     <nav class="navbar navbar-dark bg-dark bg-opacity-90 px-4">
         <div class="container-fluid d-flex justify-content-between align-items-center">
             <span class="navbar-text text-white fw-bold">QSL Virtual Ecuador</span>
-            <a href="/qsl_virtual/index.php?view=admin/management/login" class="btn btn-success">
+            <a href="<?= BASE_URL ?>/index.php?view=admin/management/login" class="btn btn-success">
                 <i class="bi bi-person-circle"></i> Login
             </a>
         </div>
     </nav>
 
     <div class="container py-5">
-        <h2 class="text-center text- text-black mb-4">RESGITROS PARA CALL: <strong><?= htmlspecialchars($call) ?></strong></h2>
+        <h2 class="text-center text- text-black mb-4">REGISTROS PARA CALL: <strong><?= htmlspecialchars($call) ?></strong></h2>
 
         <div class="table-responsive">
             <table class="table table-bordered table-hover text-center bg-white rounded-3 overflow-hidden shadow">
@@ -61,7 +65,7 @@ $event_id = $_SESSION['event_id'];
                             <td><?= $log['mode_log'] ?></td>
                             <td><?= $log['rst_sent_log'] ?> , <?= $log['rst_rcvd_log'] ?></td>
                             <td>
-                                <form action="index.php?action=generate_single_qsl_diploma" method="post" target="_blank">
+                                <form action="<?= BASE_URL ?>/index.php?action=generate_single_qsl_diploma" method="post" target="_blank">
                                     <input type="hidden" name="log_id" value="<?= $log['log_id'] ?>">
                                     <button type="submit" class="btn btn-primary btn-sm">
                                         <i class="bi bi-award-fill"></i> Obtener diploma
@@ -75,7 +79,7 @@ $event_id = $_SESSION['event_id'];
         </div>
 
         <div class="text-center mt-4">
-            <a href="/qsl_virtual/index.php?view=public/search_qsl" class="btn btn-success btn-lg">
+            <a href="<?= BASE_URL ?>/index.php?view=public/search_qsl" class="btn btn-success btn-lg">
                 <i class="bi bi-arrow-left-circle-fill"></i> Volver a buscar
             </a>
         </div>

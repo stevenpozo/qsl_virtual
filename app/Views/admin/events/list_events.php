@@ -1,4 +1,5 @@
 <?php
+require_once(__DIR__ . '/../../../../config/constants.php');
 $model = new EventModel();
 
 $search = $_GET['search'] ?? '';
@@ -25,15 +26,18 @@ $total_pages = ceil($total / $per_page);
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
 
     <!-- CSS personalizado -->
-    <link href="/qsl_virtual/app/Views/styles/list_events.css" rel="stylesheet">
+    <link href="<?= BASE_URL ?>/styles/list_events.css" rel="stylesheet">
 
     <script>
+        const baseUrl = "<?= BASE_URL ?>";
+
         function confirmLogout() {
             if (confirm("¿Estás seguro de que deseas cerrar sesión?")) {
-                window.location.href = "/qsl_virtual/index.php?action=logout";
+                window.location.href = baseUrl + "/index.php?action=logout";
             }
         }
     </script>
+
 </head>
 
 <body>
@@ -62,7 +66,7 @@ $total_pages = ceil($total / $per_page);
                     <i class="bi bi-funnel-fill"></i> Filtrar
                 </button>
             </form>
-            <a href="/qsl_virtual/index.php?view=admin/events/crear_evento" class="btn btn-success">
+            <a href="<?= BASE_URL ?>/index.php?view=admin/events/crear_evento" class="btn btn-success">
                 <i class="bi bi-plus-circle-fill"></i> Crear nuevo evento
             </a>
         </div>
@@ -87,7 +91,8 @@ $total_pages = ceil($total / $per_page);
                             <td><?= $evento['name_event'] ?></td>
                             <td><?= $evento['date_event'] ?></td>
                             <td><?= $evento['call_event'] ?></td>
-                            <td><img src="/qsl_virtual/uploads/<?= $evento['image_event'] ?>" class="img-thumbnail" width="120"></td>
+                            <td><img src="<?= BASE_URL ?>/uploads/<?= $evento['image_event'] ?>" class="img-thumbnail" width="120">
+                            </td>
                             <td>
                                 <div style="width: 40px; height: 25px; margin: auto; border: 1px solid #000; background-color: <?= htmlspecialchars($evento['color_event']) ?>"></div>
                             </td>
@@ -115,7 +120,7 @@ $total_pages = ceil($total / $per_page);
                                         <i class="bi bi-upload"></i>
                                     </a>
 
-                                    <a href="/qsl_virtual/index.php?action=delete_event&event_id=<?= $evento['event_id'] ?>"
+                                    <a href="<?= BASE_URL ?>/index.php?action=delete_event&event_id=<?= $evento['event_id'] ?>"
                                         class="btn btn-danger btn-sm"
                                         onclick="return confirm('¿Estás seguro de que deseas eliminar este evento y todos sus logs?');"
                                         title="Eliminar evento">
@@ -146,10 +151,11 @@ $total_pages = ceil($total / $per_page);
 
         <!-- Botón regresar -->
         <div class="text-center mt-4">
-            <a href="/qsl_virtual/index.php?view=admin/management/dashboard" class="btn btn-secondary btn">
+            <a href="<?= BASE_URL ?>/index.php?view=admin/management/dashboard" class="btn btn-secondary btn">
                 ⬅ Volver al Dashboard
             </a>
-            <a href="/qsl_virtual/index.php?view=admin/events/statistics_events" class="btn btn-outline-primary btn ms-2">
+            <a href="<?= BASE_URL ?>/index.php?view=admin/events/statistics_events"
+                class="btn btn-outline-primary btn ms-2">
                 📊 Ver estadísticas
             </a>
         </div>

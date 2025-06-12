@@ -1,5 +1,7 @@
 <?php
 require_once(__DIR__ . '/../../Models/EventModel.php');
+require_once(__DIR__ . '/../../../config/constants.php');
+
 $eventModel = new EventModel();
 $events = $eventModel->getAllEvents();
 ?>
@@ -18,7 +20,7 @@ $events = $eventModel->getAllEvents();
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
 
     <!-- CSS personalizado -->
-    <link href="/qsl_virtual/app/Views/styles/search_qsl.css" rel="stylesheet">
+    <link rel="stylesheet" href="<?= BASE_URL ?>/styles/search_qsl.css">
 
 </head>
 
@@ -29,7 +31,7 @@ $events = $eventModel->getAllEvents();
     <nav class="navbar navbar-dark bg-dark bg-opacity-90 px-4">
         <div class="container-fluid d-flex justify-content-between align-items-center">
             <span class="navbar-text text-white fw-bold">QSL Virtual Ecuador</span>
-            <a href="/qsl_virtual/index.php?view=admin/management/login" class="btn btn-success">
+            <a href="<?= BASE_URL ?>/index.php?view=admin/management/login" class="btn btn-success">
                 <i class="bi bi-person-circle"></i> Login
             </a>
         </div>
@@ -41,7 +43,7 @@ $events = $eventModel->getAllEvents();
             <div class="alert alert-danger text-center"><?= htmlspecialchars($_GET['msg']) ?></div>
         <?php endif; ?>
 
-        <form action="/qsl_virtual/index.php?action=search_logs" method="POST"
+        <form action="<?= BASE_URL ?>/index.php?action=search_logs" method="POST"
             class="form-container mx-auto">
             <h2 class="text-center text-black mb-4">QSL ECUADOR</h2>
 
