@@ -38,7 +38,7 @@ if (!$user) {
     <script>
         function confirmLogout() {
             if (confirm("¿Estás seguro de que deseas cerrar sesión?")) {
-                window.location.href = "/qsl_virtual/public/index.php?action=logout";
+                window.location.href = "/qsl_virtual/index.php?action=logout";
             }
         }
     </script>

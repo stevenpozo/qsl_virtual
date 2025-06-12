@@ -28,7 +28,7 @@ if (!$log) {
     <script>
         function confirmLogout() {
             if (confirm("¿Estás seguro de que deseas cerrar sesión?")) {
-                window.location.href = "/qsl_virtual/public/index.php?action=logout";
+                window.location.href = "/qsl_virtual/index.php?action=logout";
             }
         }
     </script>
@@ -49,7 +49,7 @@ if (!$log) {
     <div class="container py-5">
         <div class="form-box mx-auto">
 
-            <form method="POST" action="/qsl_virtual/public/index.php?action=update_log">
+            <form method="POST" action="/qsl_virtual/index.php?action=update_log">
                 <h2 class="text-center text-black mb-4">EDITAR LOG</h2>
 
                 <input type="hidden" name="log_id" value="<?= $log['log_id'] ?>">
@@ -121,7 +121,7 @@ if (!$log) {
             </form>
 
             <div class="text-center mt-4">
-                <a href="/qsl_virtual/public/index.php?view=admin/logs/list_logs&event_id=<?= $log['event_id'] ?>" class="btn btn-secondary">
+                <a href="/qsl_virtual/index.php?view=admin/logs/list_logs&event_id=<?= $log['event_id'] ?>" class="btn btn-secondary">
                     ← Volver a la lista de logs
                 </a>
             </div>

@@ -16,25 +16,29 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['adi_file'])) {
 
     foreach ($lines as $line) {
         if (strpos($line, '<EOR>') !== false) {
-            $data = [
-                'call_log' => extractData($line, 'CALL'),
-                'date_log' => formatDate(extractData($line, 'QSO_DATE')),
-                'utc_log' => formatTime(extractData($line, 'TIME_ON')),
-                'time_off_log' => formatTime(extractData($line, 'TIME_OFF')),
-                'band_log' => extractData($line, 'BAND'),
-                'mode_log' => extractData($line, 'MODE'),
-                'rst_rcvd_log' => extractData($line, 'RST_RCVD'),
-                'rst_sent_log' => extractData($line, 'RST_SENT'),
-                'freq_log' => extractData($line, 'FREQ'),
-                'gridsquare_log' => extractData($line, 'GRIDSQUARE'),
-                'my_gridsquare_log' => extractData($line, 'MY_GRIDSQUARE'),
-                'station_callsign_log' => extractData($line, 'STATION_CALLSIGN'),
-                'comment_log' => extractData($line, 'COMMENT'),
-                'status_log' => 1,
-                'event_id' => $eventId
-            ];
+            $call = extractData($line, 'CALL');
+            $date = formatDate(extractData($line, 'QSO_DATE'));
+            $utc = formatTime(extractData($line, 'TIME_ON'));
 
-            if ($data['call_log'] && $data['date_log'] && $data['utc_log']) {
+            if ($call && $date && $utc) {
+                $data = [
+                    'event_id' => $eventId,
+                    'call_log' => $call,
+                    'date_log' => $date,
+                    'utc_log' => $utc,
+                    'time_off_log' => formatTime(extractData($line, 'TIME_OFF')),
+                    'band_log' => extractData($line, 'BAND') ?? '',
+                    'mode_log' => extractData($line, 'MODE') ?? '',
+                    'rst_rcvd_log' => extractData($line, 'RST_RCVD') ?? '',
+                    'rst_sent_log' => extractData($line, 'RST_SENT') ?? '',
+                    'freq_log' => extractData($line, 'FREQ') ?? '',
+                    'gridsquare_log' => extractData($line, 'GRIDSQUARE') ?? '',
+                    'my_gridsquare_log' => extractData($line, 'MY_GRIDSQUARE') ?? '',
+                    'station_callsign_log' => extractData($line, 'STATION_CALLSIGN') ?? '',
+                    'comment_log' => extractData($line, 'COMMENT') ?? '',
+                    'status_log' => 1
+                ];
+
                 if (!$model->existsLog($eventId, $data)) {
                     if ($model->insertLog($data)) {
                         $insertados++;
@@ -51,14 +55,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['adi_file'])) {
         $message .= " ⚠️ $duplicados duplicates were skipped.";
     }
 
-    header("Location: /qsl_virtual/public/index.php?view=admin/events/list_events&msg=" . urlencode($message));
+    header("Location: /qsl_virtual/index.php?view=admin/events/list_events&msg=" . urlencode($message));
     exit;
 }
 
 // Extrae el valor de un campo específico en una línea ADIF.
 // Ej: extrae el valor de <CALL:6>EA8AAK como "EA8AAK".
 function extractData($line, $tag) {
-    $pattern = "/<$tag:\d+>([^<]*)/";
+    $pattern = "/<" . preg_quote($tag, '/') . ":\d+>([^<]*)/i";
     return (preg_match($pattern, $line, $matches)) ? trim($matches[1]) : null;
 }
 

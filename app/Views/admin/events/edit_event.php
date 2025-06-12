@@ -36,7 +36,7 @@ if (!$evento) {
     <script>
         function confirmLogout() {
             if (confirm("¿Estás seguro de que deseas cerrar sesión?")) {
-                window.location.href = "/qsl_virtual/public/index.php?action=logout";
+                window.location.href = "/qsl_virtual/index.php?action=logout";
             }
         }
     </script>
@@ -58,7 +58,7 @@ if (!$evento) {
         <div class="form-box mx-auto">
             <h2 class="text-center mb-4">EDITAR EVENTO</h2>
 
-            <form action="/qsl_virtual/public/index.php?view=admin/events/edit_event" method="post" enctype="multipart/form-data">
+            <form action="/qsl_virtual/index.php?view=admin/events/edit_event" method="post" enctype="multipart/form-data">
                 <input type="hidden" name="event_id" value="<?= $evento['event_id'] ?>">
 
                 <div class="mb-3">
@@ -106,7 +106,7 @@ if (!$evento) {
             </form>
 
             <div class="text-center mt-4">
-                <a href="/qsl_virtual/public/index.php?view=admin/events/list_events" class="btn btn-secondary">
+                <a href="/qsl_virtual/index.php?view=admin/events/list_events" class="btn btn-secondary">
                     ← Volver a la lista de eventos
                 </a>
             </div>

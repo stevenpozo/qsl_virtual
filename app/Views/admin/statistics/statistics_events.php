@@ -19,7 +19,7 @@ endif; ?>
     <script>
         function confirmLogout() {
             if (confirm("¿Estás seguro de que deseas cerrar sesión?")) {
-                window.location.href = "/qsl_virtual/public/index.php?action=logout";
+                window.location.href = "/qsl_virtual/index.php?action=logout";
             }
         }
     </script>
@@ -75,7 +75,7 @@ endif; ?>
 
         <!-- Botón volver -->
         <div class="text-center mt-4">
-            <a href="/qsl_virtual/public/index.php?view=admin/events/list_events" class="btn btn-secondary">
+            <a href="/qsl_virtual/index.php?view=admin/events/list_events" class="btn btn-secondary">
                 ← Volver a Eventos
             </a>
         </div>

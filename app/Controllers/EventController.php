@@ -20,7 +20,7 @@ class EventController
             // Validar que no exista el mismo call_event
             // Validar que no exista el mismo name_event
             if ($model->existsCallSign($name)) {
-                header("Location: /qsl_virtual/public/index.php?view=admin/events/crear_evento&msg=" . urlencode("⚠️ El nombre del evento '$name' ya está registrado."));
+                header("Location: /qsl_virtual/index.php?view=admin/events/crear_evento&msg=" . urlencode("⚠️ El nombre del evento '$name' ya está registrado."));
                 exit;
             }
 
@@ -39,9 +39,9 @@ class EventController
             ]);
 
             if ($success) {
-                header('Location: /qsl_virtual/public/index.php?view=admin/events/list_events&msg=' . urlencode('✅ Event created successfully.'));
+                header('Location: /qsl_virtual/index.php?view=admin/events/list_events&msg=' . urlencode('✅ Event created successfully.'));
             } else {
-                header('Location: /qsl_virtual/public/index.php?view=admin/events/crear_evento&msg=' . urlencode('❌ Error saving event.'));
+                header('Location: /qsl_virtual/index.php?view=admin/events/crear_evento&msg=' . urlencode('❌ Error saving event.'));
             }
 
             exit;
@@ -75,7 +75,7 @@ class EventController
             }
 
             $model->updateEvent($id, $name, $date, $call, $imageName, $status, $color);
-            header("Location: /qsl_virtual/public/index.php?view=admin/events/list_events");
+            header("Location: /qsl_virtual/index.php?view=admin/events/list_events");
             exit;
         }
     }
@@ -96,5 +96,21 @@ class EventController
 
         // Exportar la variable para la vista
         include(__DIR__ . '/../Views/admin/statistics/statistics_events.php');
+    }
+
+    public function deleteEvent()
+    {
+        if (isset($_GET['event_id'])) {
+            $event_id = $_GET['event_id'];
+            $model = new EventModel();
+            $success = $model->deleteEventWithLogs($event_id);
+
+            $msg = $success
+                ? urlencode("✅ Evento eliminado correctamente.")
+                : urlencode("❌ Error al eliminar el evento.");
+
+            header("Location: /qsl_virtual/index.php?view=admin/events/list_events&msg={$msg}");
+            exit;
+        }
     }
 }

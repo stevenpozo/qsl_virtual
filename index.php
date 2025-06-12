@@ -19,24 +19,24 @@ $rutas_validas = [
     'admin/management/create_user' => 'app/Views/admin/management/create_user.php',
 ];
 
-$view = $_GET['view'] ?? 'admin/events/list_events';
+$view = $_GET['view'] ?? 'public/search_qsl';
 $action = $_GET['action'] ?? null;
 
 // Incluir modelos necesarios
-require_once(__DIR__ . '/../app/Models/EventModel.php');
-require_once(__DIR__ . '/../app/Models/LogModel.php');
+require_once(__DIR__ . '/app/Models/EventModel.php');
+require_once(__DIR__ . '/app/Models/LogModel.php');
 $model = new LogModel();
 
 // ✅ Acción: crear evento
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && $action === 'create_event') {
-    require_once(__DIR__ . '/../app/Controllers/EventController.php');
+    require_once(__DIR__ . '/app/Controllers/EventController.php');
     (new EventController())->createEvent();
     exit;
 }
 
 // ✅ Acción: editar evento
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['edit_event'])) {
-    require_once(__DIR__ . '/../app/Controllers/EventController.php');
+    require_once(__DIR__ . '/app/Controllers/EventController.php');
     (new EventController())->editEvent();
     exit;
 }
@@ -105,7 +105,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $action === 'update_log') {
 
 // ✅ Ver estadísticas
 if ($view === 'admin/events/statistics_events') {
-    require_once(__DIR__ . '/../app/Controllers/EventController.php');
+    require_once(__DIR__ . '/app/Controllers/EventController.php');
     (new EventController())->showStatistics();
     exit;
 }
@@ -130,14 +130,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $action === 'buscar_qsls') {
 
 // ✅ Buscar logs QSL (desde cliente)
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && $action === 'search_logs') {
-    require_once(__DIR__ . '/../app/Controllers/QslController.php');
+    require_once(__DIR__ . '/app/Controllers/QslController.php');
     (new QslController())->searchLogs();
     exit;
 }
 
 // ✅ Generar diploma PDF
 if ($action === 'generate_single_qsl_diploma') {
-    require_once(__DIR__ . '/../app/Controllers/QslController.php');
+    require_once(__DIR__ . '/app/Controllers/QslController.php');
     (new QslController())->generateSingleQslDiploma();
     exit;
 }
@@ -146,7 +146,7 @@ if ($action === 'generate_single_qsl_diploma') {
 
 // ✅ Login
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && $action === 'login') {
-    require_once(__DIR__ . '/../app/Models/UserModel.php');
+    require_once(__DIR__ . '/app/Models/UserModel.php');
 
     $username = $_POST['username'] ?? '';
     $password = $_POST['password'] ?? '';
@@ -174,7 +174,7 @@ if ($action === 'logout') {
 
 // Crear usuario
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && $action === 'create_user') {
-    require_once(__DIR__ . '/../app/Models/UserModel.php');
+    require_once(__DIR__ . '/app/Models/UserModel.php');
     $model = new UserModel();
 
     $username = $_POST['username'];
@@ -196,7 +196,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $action === 'create_user') {
 
 // ✅ Acción: deshabilitar usuario (GET)
 if ($action === 'disable' && isset($_GET['user_id'])) {
-    require_once(__DIR__ . '/../app/Models/UserModel.php');
+    require_once(__DIR__ . '/app/Models/UserModel.php');
     $model = new UserModel();
     $model->disableUser($_GET['user_id']);
     header("Location: index.php?view=admin/management/users");
@@ -205,7 +205,7 @@ if ($action === 'disable' && isset($_GET['user_id'])) {
 
 // ✅ Acción: habilitar usuario (GET)
 if ($action === 'enable' && isset($_GET['user_id'])) {
-    require_once(__DIR__ . '/../app/Models/UserModel.php');
+    require_once(__DIR__ . '/app/Models/UserModel.php');
     $model = new UserModel();
     $model->enableUser($_GET['user_id']);
     header("Location: index.php?view=admin/management/users");
@@ -214,16 +214,23 @@ if ($action === 'enable' && isset($_GET['user_id'])) {
 
 // ✅ Actualizar usuario
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && $action === 'update_user') {
-    require_once(__DIR__ . '/../app/Models/UserModel.php');
+    require_once(__DIR__ . '/app/Models/UserModel.php');
     $model = new UserModel();
     $model->updateUser($_POST['user_id'], $_POST['username'], $_POST['role']);
     header("Location: index.php?view=admin/management/users&msg=Usuario actualizado");
     exit;
 }
 
+if ($action === 'delete_event' && isset($_GET['event_id'])) {
+    require_once(__DIR__ . '/app/Controllers/EventController.php');
+    (new EventController())->deleteEvent();
+    exit;
+}
+
+
 // ✅ Mostrar la vista correspondiente (último paso)
 if (array_key_exists($view, $rutas_validas)) {
-    require_once(__DIR__ . '/../' . $rutas_validas[$view]);
+    require_once(__DIR__ . '/' . $rutas_validas[$view]);
 } else {
     echo "<h2>❌ Vista no encontrada</h2>";
 }

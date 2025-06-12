@@ -27,7 +27,7 @@ $usuarios = $model->getAllUsers();
     <script>
         function confirmLogout() {
             if (confirm("¿Estás seguro de que deseas cerrar sesión?")) {
-                window.location.href = "/qsl_virtual/public/index.php?action=logout";
+                window.location.href = "/qsl_virtual/index.php?action=logout";
             }
         }
     </script>
@@ -101,7 +101,7 @@ $usuarios = $model->getAllUsers();
         </div>
 
         <div class="text-center mt-4">
-            <a href="/qsl_virtual/public/index.php?view=admin/management/dashboard" class="btn btn-secondary">
+            <a href="/qsl_virtual/index.php?view=admin/management/dashboard" class="btn btn-secondary">
                 ← Volver al Dashboard
             </a>
         </div>

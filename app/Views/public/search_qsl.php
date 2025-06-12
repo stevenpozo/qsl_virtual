@@ -19,6 +19,7 @@ $events = $eventModel->getAllEvents();
 
     <!-- CSS personalizado -->
     <link href="/qsl_virtual/app/Views/styles/search_qsl.css" rel="stylesheet">
+
 </head>
 
 <body>
@@ -28,7 +29,7 @@ $events = $eventModel->getAllEvents();
     <nav class="navbar navbar-dark bg-dark bg-opacity-90 px-4">
         <div class="container-fluid d-flex justify-content-between align-items-center">
             <span class="navbar-text text-white fw-bold">QSL Virtual Ecuador</span>
-            <a href="/qsl_virtual/public/index.php?view=admin/management/login" class="btn btn-success">
+            <a href="/qsl_virtual/index.php?view=admin/management/login" class="btn btn-success">
                 <i class="bi bi-person-circle"></i> Login
             </a>
         </div>
@@ -40,7 +41,7 @@ $events = $eventModel->getAllEvents();
             <div class="alert alert-danger text-center"><?= htmlspecialchars($_GET['msg']) ?></div>
         <?php endif; ?>
 
-        <form action="/qsl_virtual/public/index.php?action=search_logs" method="POST"
+        <form action="/qsl_virtual/index.php?action=search_logs" method="POST"
             class="form-container mx-auto">
             <h2 class="text-center text-black mb-4">QSL ECUADOR</h2>
 
@@ -62,14 +63,36 @@ $events = $eventModel->getAllEvents();
                 <label for="call" class="form-label fw-semibold">
                     <i class="bi bi-broadcast-pin me-1"></i>Ingrese su indicativo (CALL):
                 </label>
-                <input type="text" name="call" class="form-control" placeholder="Ej: PU1AJN" required>
+                <input type="text" name="call" id="call" class="form-control" placeholder="Ej: PU1AJN" required
+                    pattern="[A-Za-z0-9/]+" title="Solo letras, números y el signo /">
+                <div id="callError" class="text-danger mt-1" style="display: none;">
+                    Solo se permiten letras, números y el signo "/".
+                </div>
             </div>
+
 
             <button type="submit" class="btn btn-primary w-100 btn-lg">
                 <i class="bi bi-search"></i> Buscar registros
             </button>
         </form>
     </div>
+
+    <script>
+        const callInput = document.getElementById('call');
+        const callError = document.getElementById('callError');
+        const pattern = /^[A-Z0-9/]+$/;
+
+        callInput.addEventListener('input', function() {
+            const value = callInput.value;
+            if (value === '' || pattern.test(value)) {
+                callInput.classList.remove('is-invalid');
+                callError.style.display = 'none';
+            } else {
+                callInput.classList.add('is-invalid');
+                callError.style.display = 'block';
+            }
+        });
+    </script>
 </body>
 
 </html>

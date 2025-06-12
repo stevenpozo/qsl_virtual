@@ -29,7 +29,7 @@ $event_id = $_SESSION['event_id'];
     <nav class="navbar navbar-dark bg-dark bg-opacity-90 px-4">
         <div class="container-fluid d-flex justify-content-between align-items-center">
             <span class="navbar-text text-white fw-bold">QSL Virtual Ecuador</span>
-            <a href="/qsl_virtual/public/index.php?view=admin/management/login" class="btn btn-success">
+            <a href="/qsl_virtual/index.php?view=admin/management/login" class="btn btn-success">
                 <i class="bi bi-person-circle"></i> Login
             </a>
         </div>
@@ -75,7 +75,7 @@ $event_id = $_SESSION['event_id'];
         </div>
 
         <div class="text-center mt-4">
-            <a href="/qsl_virtual/public/index.php?view=public/search_qsl" class="btn btn-success btn-lg">
+            <a href="/qsl_virtual/index.php?view=public/search_qsl" class="btn btn-success btn-lg">
                 <i class="bi bi-arrow-left-circle-fill"></i> Volver a buscar
             </a>
         </div>

@@ -30,7 +30,7 @@ $total_pages = ceil($total / $per_page);
     <script>
         function confirmLogout() {
             if (confirm("¿Estás seguro de que deseas cerrar sesión?")) {
-                window.location.href = "/qsl_virtual/public/index.php?action=logout";
+                window.location.href = "/qsl_virtual/index.php?action=logout";
             }
         }
     </script>
@@ -62,7 +62,7 @@ $total_pages = ceil($total / $per_page);
                     <i class="bi bi-funnel-fill"></i> Filtrar
                 </button>
             </form>
-            <a href="/qsl_virtual/public/index.php?view=admin/events/crear_evento" class="btn btn-success">
+            <a href="/qsl_virtual/index.php?view=admin/events/crear_evento" class="btn btn-success">
                 <i class="bi bi-plus-circle-fill"></i> Crear nuevo evento
             </a>
         </div>
@@ -114,6 +114,14 @@ $total_pages = ceil($total / $per_page);
                                         class="btn btn-primary btn-sm" title="Subir logs .ADI">
                                         <i class="bi bi-upload"></i>
                                     </a>
+
+                                    <a href="/qsl_virtual/index.php?action=delete_event&event_id=<?= $evento['event_id'] ?>"
+                                        class="btn btn-danger btn-sm"
+                                        onclick="return confirm('¿Estás seguro de que deseas eliminar este evento y todos sus logs?');"
+                                        title="Eliminar evento">
+                                        <i class="bi bi-trash3-fill"></i>
+                                    </a>
+
                                 </div>
                             </td>
 
@@ -138,10 +146,10 @@ $total_pages = ceil($total / $per_page);
 
         <!-- Botón regresar -->
         <div class="text-center mt-4">
-            <a href="/qsl_virtual/public/index.php?view=admin/management/dashboard" class="btn btn-secondary btn">
+            <a href="/qsl_virtual/index.php?view=admin/management/dashboard" class="btn btn-secondary btn">
                 ⬅ Volver al Dashboard
             </a>
-            <a href="/qsl_virtual/public/index.php?view=admin/events/statistics_events" class="btn btn-outline-primary btn ms-2">
+            <a href="/qsl_virtual/index.php?view=admin/events/statistics_events" class="btn btn-outline-primary btn ms-2">
                 📊 Ver estadísticas
             </a>
         </div>

@@ -128,4 +128,17 @@ class EventModel
         $stmt->execute();
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
+
+    public function deleteEventWithLogs($event_id)
+    {
+        // Eliminar logs primero (clave foránea depende de la config de tu DB)
+        $sqlLogs = "DELETE FROM logs WHERE event_id = :event_id";
+        $stmtLogs = $this->conn->prepare($sqlLogs);
+        $stmtLogs->execute([':event_id' => $event_id]);
+
+        // Luego eliminar el evento
+        $sqlEvent = "DELETE FROM eventos WHERE event_id = :event_id";
+        $stmtEvent = $this->conn->prepare($sqlEvent);
+        return $stmtEvent->execute([':event_id' => $event_id]);
+    }
 }

@@ -35,7 +35,7 @@ $totalPages = ceil($total / $limit);
     <script>
         function confirmLogout() {
             if (confirm("¿Estás seguro de que deseas cerrar sesión?")) {
-                window.location.href = "/qsl_virtual/public/index.php?action=logout";
+                window.location.href = "/qsl_virtual/index.php?action=logout";
             }
         }
     </script>
@@ -108,8 +108,8 @@ $totalPages = ceil($total / $limit);
                             </td>
                             <td>
                                 <div class="d-flex justify-content-center gap-2 flex-wrap">
-                                    <a href="/qsl_virtual/public/index.php?view=admin/logs/edit_log&log_id=<?= $log['log_id'] ?>" class="btn btn-warning btn-sm" title="Editar"><i class="bi bi-pencil-fill"></i></a>
-                                    <a href="/qsl_virtual/public/index.php?action=toggle_log_status&log_id=<?= $log['log_id'] ?>&event_id=<?= $eventId ?>" class="btn btn-secondary btn-sm" title="Activar/Inactivar"><i class="bi bi-power"></i></a>
+                                    <a href="/qsl_virtual/index.php?view=admin/logs/edit_log&log_id=<?= $log['log_id'] ?>" class="btn btn-warning btn-sm" title="Editar"><i class="bi bi-pencil-fill"></i></a>
+                                    <a href="/qsl_virtual/index.php?action=toggle_log_status&log_id=<?= $log['log_id'] ?>&event_id=<?= $eventId ?>" class="btn btn-secondary btn-sm" title="Activar/Inactivar"><i class="bi bi-power"></i></a>
                                 </div>
                             </td>
                         </tr>
@@ -142,7 +142,7 @@ $totalPages = ceil($total / $limit);
         <div id="logForm" style="display: none;">
 
             <h3 class="text-black mt-5 mb-3 text-center">Insertar Log Manual</h3>
-            <form method="POST" action="/qsl_virtual/public/index.php?action=insert_manual_log" class="bg-light p-4 rounded shadow mx-auto" style="max-width: 800px;">
+            <form method="POST" action="/qsl_virtual/index.php?action=insert_manual_log" class="bg-light p-4 rounded shadow mx-auto" style="max-width: 800px;">
                 <input type="hidden" name="event_id" value="<?= $eventId ?>">
 
                 <div class="row g-3">
@@ -168,11 +168,10 @@ $totalPages = ceil($total / $limit);
 
         <!-- Botón volver -->
         <div class="text-center mt-5">
-            <a href="/qsl_virtual/public/index.php?view=admin/events/list_events" class="btn btn-secondary btn">
+            <a href="/qsl_virtual/index.php?view=admin/events/list_events" class="btn btn-secondary btn">
                 ← Volver a la lista de eventos
             </a>
         </div>
     </div>
 </body>
-
 </html>

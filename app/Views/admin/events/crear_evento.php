@@ -23,7 +23,7 @@ if (!isset($_SESSION['username'])) {
     <script>
         function confirmLogout() {
             if (confirm("¿Estás seguro de que deseas cerrar sesión?")) {
-                window.location.href = "/qsl_virtual/public/index.php?action=logout";
+                window.location.href = "/qsl_virtual/index.php?action=logout";
             }
         }
     </script>
@@ -49,7 +49,7 @@ if (!isset($_SESSION['username'])) {
                 <div class="alert alert-danger text-center"><?= htmlspecialchars($_GET['msg']) ?></div>
             <?php endif; ?>
 
-            <form action="/qsl_virtual/public/index.php?action=create_event" method="post" enctype="multipart/form-data">
+            <form action="/qsl_virtual/index.php?action=create_event" method="post" enctype="multipart/form-data">
                 <div class="mb-3">
                     <label class="form-label">Nombre del Evento:</label>
                     <input type="text" name="name_event" class="form-control" required>
@@ -81,7 +81,7 @@ if (!isset($_SESSION['username'])) {
             </form>
 
             <div class="text-center mt-4">
-                <a href="/qsl_virtual/public/index.php?view=admin/events/list_events" class="btn btn-secondary">
+                <a href="/qsl_virtual/index.php?view=admin/events/list_events" class="btn btn-secondary">
                     ⬅ Volver a lista de eventos
                 </a>
             </div>

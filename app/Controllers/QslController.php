@@ -14,7 +14,7 @@ class QslController
         $callSign = strtoupper(trim($_POST['call'] ?? ''));
 
         if (!$eventId || !$callSign) {
-            header("Location: /qsl_virtual/public/index.php?view=public/search_qsl&msg=" . urlencode("Missing data."));
+            header("Location: /qsl_virtual/index.php?view=public/search_qsl&msg=" . urlencode("Missing data."));
             exit;
         }
 
@@ -22,7 +22,7 @@ class QslController
         $logs = $logModel->getLogsByEventAndCall($eventId, $callSign);
 
         if (count($logs) === 0) {
-            header("Location: /qsl_virtual/public/index.php?view=public/search_qsl&msg=" . urlencode("❌ No records found for CALL '$callSign'"));
+            header("Location: /qsl_virtual/index.php?view=public/search_qsl&msg=" . urlencode("❌ No records found for CALL '$callSign'"));
             exit;
         }
 
@@ -30,7 +30,7 @@ class QslController
         $_SESSION['call'] = $callSign;
         $_SESSION['event_id'] = $eventId;
 
-        header("Location: /qsl_virtual/public/index.php?view=public/list_qsls");
+        header("Location: /qsl_virtual/index.php?view=public/list_qsls");
         exit;
     }
 

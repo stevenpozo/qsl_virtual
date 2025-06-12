@@ -55,7 +55,7 @@ if (isset($_SESSION['username'])) {
             </form>
 
             <div class="text-center mt-4">
-                <a class="btn btn-secondary btn-sm" href="/qsl_virtual/public/index.php?view=public/search_qsl">
+                <a class="btn btn-secondary btn-sm" href="/qsl_virtual/index.php?view=public/search_qsl">
                     ← Volver a búsqueda QSL
                 </a>
             </div>
