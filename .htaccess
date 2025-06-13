@@ -1,0 +1,22 @@
+# Activar el motor de reescritura
+RewriteEngine On
+
+# Establecer el archivo por defecto
+DirectoryIndex index.php
+
+# Reescritura: redirigir URLs limpias a index.php
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^(.*)$ index.php?view=$1 [QSA,L]
+
+# Asegurar codificación UTF-8
+AddDefaultCharset UTF-8
+
+# Seguridad: bloquear acceso a archivos sensibles
+<FilesMatch "\.(htaccess|env|ini|phps|fla|psd|log|sh)$">
+  Order Allow,Deny
+  Deny from all
+</FilesMatch>
+
+# Seguridad: bloquear acceso a la carpeta /config
+RedirectMatch 403 ^/config/

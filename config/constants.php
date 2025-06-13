@@ -8,10 +8,11 @@
 $host = $_SERVER['HTTP_HOST'] ?? '';
 $base = '';
 
-// Detecta si estás trabajando localmente (localhost o 127.0.0.1)
 if (str_contains($host, 'localhost') || str_contains($host, '127.0.0.1')) {
-    $base = '/QSL_VIRTUAL'; // Cambia esto si tu carpeta se llama distinto
+    $base = '/QSL_VIRTUAL'; // Solo en entorno local
+} else {
+    $base = ''; // Producción: raíz del dominio
 }
 
-// Constante global que puedes usar en todas tus vistas
 define('BASE_URL', $base);
+
