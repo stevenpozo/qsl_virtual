@@ -70,7 +70,7 @@ $eventId = $_GET['event_id'] ?? null;
 
             <div class="preview-box">
                 <div id="summary" class="mb-3 text-center fw-semibold"></div>
-                <div id="preview" class="table-responsive"></div>
+                <!-- <div id="preview" class="table-responsive"></div> -->
             </div>
 
             <div class="text-center mt-4">

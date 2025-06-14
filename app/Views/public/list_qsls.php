@@ -59,7 +59,7 @@ $event_id = $_SESSION['event_id'];
                             <td><?= $log['utc_log'] ?></td>
                             <td><?= $log['band_log'] ?></td>
                             <td><?= $log['mode_log'] ?></td>
-                            <td><?= $log['rst_sent_log'] ?> , <?= $log['rst_rcvd_log'] ?></td>
+                            <td><?= $log['rst_rcvd_log'] ?> , <?= $log['rst_sent_log'] ?></td>
                             <td>
                                 <form action="<?= BASE_URL ?>/index.php?action=generate_single_qsl_diploma" method="post" target="_blank">
                                     <input type="hidden" name="log_id" value="<?= $log['log_id'] ?>">

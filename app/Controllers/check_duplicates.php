@@ -25,29 +25,41 @@ $model = new LogModel();
 $response = [];
 
 foreach ($logs as $index => $log) {
-    // Normalizar estructura
     $normalized = [
+        'event_id' => $eventId,
+        'band_log' => $log['BAND'] ?? '',
         'call_log' => $log['CALL'] ?? '',
+        'freq_log' => $log['FREQ'] ?? '',
+        'mode_log' => $log['MODE'] ?? '',
+        'rst_rcvd_log' => $log['RST_RCVD'] ?? '',
+        'rst_sent_log' => $log['RST_SENT'] ?? '',
+        'station_callsign_log' => $log['STATION_CALLSIGN'] ?? '',
+        'time_off_log' => formatTime($log['TIME_OFF'] ?? ''),
+        'utc_log' => formatTime($log['TIME_ON'] ?? ''),
         'date_log' => formatDate($log['QSO_DATE'] ?? ''),
-        'utc_log' => formatTime($log['TIME_ON'] ?? '')
+        'status_log' => 1
     ];
 
     $isDuplicate = $model->existsLog($eventId, $normalized);
+
     $response[] = [
         'index' => $index,
         'isDuplicate' => $isDuplicate
     ];
 }
 
+
 echo json_encode($response);
 
-function formatDate($date) {
+function formatDate($date)
+{
     return strlen($date) === 8
         ? substr($date, 0, 4) . '-' . substr($date, 4, 2) . '-' . substr($date, 6, 2)
         : $date;
 }
 
-function formatTime($time) {
+function formatTime($time)
+{
     return strlen($time) === 6
         ? substr($time, 0, 2) . ':' . substr($time, 2, 2) . ':' . substr($time, 4, 2)
         : $time;

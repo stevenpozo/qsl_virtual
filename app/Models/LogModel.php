@@ -35,18 +35,36 @@ class LogModel
     public function existsLog($event_id, $data)
     {
         $sql = "SELECT COUNT(*) FROM logs WHERE 
-        event_id = :event_id AND call_log = :call_log AND date_log = :date_log AND utc_log = :utc_log";
+        event_id = :event_id AND
+        band_log = :band_log AND
+        call_log = :call_log AND
+        freq_log = :freq_log AND
+        mode_log = :mode_log AND
+        rst_rcvd_log = :rst_rcvd_log AND
+        rst_sent_log = :rst_sent_log AND
+        station_callsign_log = :station_callsign_log AND
+        time_off_log = :time_off_log AND
+        utc_log = :utc_log AND
+        date_log = :date_log";
 
         $stmt = $this->conn->prepare($sql);
         $stmt->execute([
             ':event_id' => $event_id,
+            ':band_log' => $data['band_log'],
             ':call_log' => $data['call_log'],
-            ':date_log' => $data['date_log'],
-            ':utc_log' => $data['utc_log']
+            ':freq_log' => $data['freq_log'],
+            ':mode_log' => $data['mode_log'],
+            ':rst_rcvd_log' => $data['rst_rcvd_log'],
+            ':rst_sent_log' => $data['rst_sent_log'],
+            ':station_callsign_log' => $data['station_callsign_log'],
+            ':time_off_log' => $data['time_off_log'],
+            ':utc_log' => $data['utc_log'],
+            ':date_log' => $data['date_log']
         ]);
 
         return $stmt->fetchColumn() > 0;
     }
+
 
     public function getLogsByEvent($eventId, $search = '', $date = '', $limit = 20, $offset = 0)
     {

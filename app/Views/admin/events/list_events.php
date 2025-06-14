@@ -98,12 +98,12 @@ $total_pages = ceil($total / $per_page);
                                     </a>
 
                                     <a href="index.php?view=admin/logs/list_logs&event_id=<?= $evento['event_id'] ?>"
-                                        class="btn btn-secondary btn-sm" title="Ver logs">
+                                        class="btn btn-secondary btn-sm" title="Ver registros">
                                         <i class="bi bi-file-earmark-text-fill"></i>
                                     </a>
 
                                     <a href="index.php?view=admin/logs/load_log&event_id=<?= $evento['event_id'] ?>"
-                                        class="btn btn-primary btn-sm" title="Subir logs .ADI">
+                                        class="btn btn-primary btn-sm" title="Subir registros">
                                         <i class="bi bi-upload"></i>
                                     </a>
 
