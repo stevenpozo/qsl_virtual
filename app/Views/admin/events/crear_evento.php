@@ -1,6 +1,5 @@
 <?php
 require_once(__DIR__ . '/../../../../config/constants.php');
-
 if (session_status() === PHP_SESSION_NONE) session_start();
 if (!isset($_SESSION['username'])) {
     header("Location: index.php?view=admin/management/login");
@@ -22,29 +21,15 @@ if (!isset($_SESSION['username'])) {
 
     <!-- Estilos personalizados -->
     <link href="<?= BASE_URL ?>/styles/crear_evento.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
-    <script>
-        const baseUrl = "<?= BASE_URL ?>";
-
-        function confirmLogout() {
-            if (confirm("¿Estás seguro de que deseas cerrar sesión?")) {
-                window.location.href = baseUrl + "/index.php?action=logout";
-            }
-        }
-    </script>
 
 </head>
 
 <body>
     <!-- Navbar -->
-    <nav class="navbar navbar-dark bg-dark bg-opacity-90 px-4">
-        <div class="container-fluid d-flex justify-content-between align-items-center">
-            <span class="navbar-text text-white fw-bold">QSL virtual Ecuador</span>
-            <a href="#" onclick="confirmLogout()" class="btn btn-danger">
-                <i class="bi bi-box-arrow-right"></i> Cerrar sesión
-            </a>
-        </div>
-    </nav>
+    <?php include(APP_PATH . 'app/Include/navbar.php'); ?>
+
 
     <!-- Contenido principal -->
     <div class="container py-5">
@@ -68,7 +53,9 @@ if (!isset($_SESSION['username'])) {
 
                 <div class="mb-3">
                     <label class="form-label">Call Event:</label>
-                    <input type="text" name="call_event" class="form-control" required>
+                    <input type="text" name="call_event" id="call_event" class="form-control" required>
+                    <div id="call_event_feedback" class="form-text text-danger d-none"> Solo se permiten letras mayúsculas, números y el signo "/".
+                    </div>
                 </div>
 
                 <div class="mb-3">
@@ -81,9 +68,10 @@ if (!isset($_SESSION['username'])) {
                     <input type="color" name="color_event" class="form-control form-control-color" value="#000000" required>
                 </div>
 
-                <button type="submit" class="btn btn-primary w-100 btn">
+                <button type="submit" id="submit_btn" class="btn btn-primary w-100 btn" disabled>
                     <i class="bi bi-save-fill"></i> Guardar Evento
                 </button>
+
             </form>
 
             <div class="text-center mt-4">
@@ -93,6 +81,32 @@ if (!isset($_SESSION['username'])) {
             </div>
         </div>
     </div>
+
+    <script>
+        const callInput = document.getElementById("call_event");
+        const submitBtn = document.getElementById("submit_btn");
+        const feedback = document.getElementById("call_event_feedback");
+
+        function validateCallEvent(value) {
+            // Solo permite letras mayúsculas y /
+            const regex = /^[A-Z0-9/]+$/;
+            return regex.test(value);
+        }
+
+        callInput.addEventListener("input", function() {
+            // Convierte a mayúsculas automáticamente
+            this.value = this.value.toUpperCase();
+
+            if (validateCallEvent(this.value)) {
+                submitBtn.disabled = false;
+                feedback.classList.add("d-none");
+            } else {
+                submitBtn.disabled = true;
+                feedback.classList.remove("d-none");
+            }
+        });
+    </script>
+
 </body>
 
 </html>

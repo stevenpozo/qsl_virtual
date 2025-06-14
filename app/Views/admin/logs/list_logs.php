@@ -1,5 +1,6 @@
 <?php
 require_once(__DIR__ . '/../../../../config/constants.php');
+require_once(__DIR__ . '/../../../Models/LogModel.php');
 
 if (session_status() === PHP_SESSION_NONE) session_start();
 if (!isset($_SESSION['username'])) {
@@ -29,45 +30,31 @@ $totalPages = ceil($total / $limit);
     <title>Logs del Evento</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <!-- Bootstrap + Icons -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
     <link href="<?= BASE_URL ?>/styles/list_logs.css" rel="stylesheet">
-
-    <script>
-        const baseUrl = "<?= BASE_URL ?>";
-
-        function confirmLogout() {
-            if (confirm("¿Estás seguro de que deseas cerrar sesión?")) {
-                window.location.href = baseUrl + "/index.php?action=logout";
-            }
-        }
-    </script>
 
     <script>
         function toggleLogForm() {
             const form = document.getElementById('logForm');
             form.style.display = form.style.display === 'none' ? 'block' : 'none';
         }
+
+        function confirmInsertLog() {
+            return confirm("¿Deseas insertar este log manualmente?");
+        }
     </script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
 </head>
 
 <body>
-    <!-- Navbar -->
-    <nav class="navbar navbar-dark bg-dark bg-opacity-90 px-4">
-        <div class="container-fluid d-flex justify-content-between align-items-center">
-            <span class="navbar-text text-white fw-bold">QSL virtual Ecuador</span>
-            <a href="#" onclick="confirmLogout()" class="btn btn-danger">
-                <i class="bi bi-box-arrow-right"></i> Cerrar sesión
-            </a>
-        </div>
-    </nav>
+    <?php include(APP_PATH . 'app/Include/navbar.php'); ?>
+
 
     <div class="container py-5">
         <h2 class="text-black mb-4 text-center">Registros del evento</h2>
 
-        <!-- Filtros -->
         <form method="GET" class="d-flex flex-wrap gap-2 mb-4 justify-content-center">
             <input type="hidden" name="view" value="admin/logs/list_logs">
             <input type="hidden" name="event_id" value="<?= $eventId ?>">
@@ -78,7 +65,6 @@ $totalPages = ceil($total / $limit);
             </button>
         </form>
 
-        <!-- Tabla de logs -->
         <div class="table-responsive">
             <table class="table table-bordered table-hover bg-white text-center align-middle shadow-sm">
                 <thead class="table-dark text-white">
@@ -123,7 +109,6 @@ $totalPages = ceil($total / $limit);
             </table>
         </div>
 
-        <!-- Paginación -->
         <nav class="d-flex justify-content-center mt-4">
             <ul class="pagination pagination">
                 <?php for ($i = 1; $i <= $totalPages; $i++): ?>
@@ -135,21 +120,17 @@ $totalPages = ceil($total / $limit);
                 <?php endfor; ?>
             </ul>
         </nav>
+
         <div class="text-center mt-5 mb-3">
             <button class="btn btn-success btn" onclick="toggleLogForm()">
                 <i class="bi bi-plus-circle-fill"></i> Insertar Log Manual
             </button>
         </div>
 
-
-
-        <!-- Insertar log manual -->
         <div id="logForm" style="display: none;">
-
             <h3 class="text-black mt-5 mb-3 text-center">Insertar Log Manual</h3>
-            <form method="POST" action="<?= BASE_URL ?>/index.php?action=insert_manual_log" class="bg-light p-4 rounded shadow mx-auto" style="max-width: 800px;">
+            <form method="POST" action="<?= BASE_URL ?>/index.php?action=insert_manual_log" onsubmit="return confirmInsertLog()" class="bg-light p-4 rounded shadow mx-auto" style="max-width: 800px;">
                 <input type="hidden" name="event_id" value="<?= $eventId ?>">
-
                 <div class="row g-3">
                     <div class="col-md-3"><input type="text" name="call_log" class="form-control" placeholder="Call" required></div>
                     <div class="col-md-3"><input type="date" name="date_log" class="form-control" required></div>
@@ -160,18 +141,13 @@ $totalPages = ceil($total / $limit);
                     <div class="col-md-3"><input type="text" name="rst_rcvd_log" class="form-control" placeholder="RST Rcvd"></div>
                     <div class="col-md-3"><input type="text" name="freq_log" class="form-control" placeholder="Freq"></div>
                     <div class="col-md-4"><input type="text" name="station_callsign_log" class="form-control" placeholder="Estación"></div>
-                    <div class="col-md-4"><input type="text" name="my_gridsquare_log" class="form-control" placeholder="My Grid"></div>
-                    <div class="col-md-4"><input type="text" name="comment_log" class="form-control" placeholder="Comentario"></div>
                 </div>
-
                 <div class="text-center mt-3">
                     <button type="submit" class="btn btn-primary btn"><i class="bi bi-plus-circle-fill"></i> Insertar</button>
                 </div>
             </form>
         </div>
 
-
-        <!-- Botón volver -->
         <div class="text-center mt-5">
             <a href="<?= BASE_URL ?>/index.php?view=admin/events/list_events" class="btn btn-secondary btn">
                 ← Volver a la lista de eventos

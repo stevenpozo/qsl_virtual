@@ -105,7 +105,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $action === 'update_log') {
 }
 
 // ✅ Ver estadísticas
-if ($view === 'admin/events/statistics_events') {
+if ($view === 'admin/statistics/statistics_events') {
     require_once(__DIR__ . '/app/Controllers/EventController.php');
     (new EventController())->showStatistics();
     exit;

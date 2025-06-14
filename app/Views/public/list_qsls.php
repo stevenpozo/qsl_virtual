@@ -26,18 +26,14 @@ $event_id = $_SESSION['event_id'];
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
     <link href="<?= BASE_URL ?>/styles/list_qsls.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
 </head>
 
 <body>
     <!-- Navbar -->
-    <nav class="navbar navbar-dark bg-dark bg-opacity-90 px-4">
-        <div class="container-fluid d-flex justify-content-between align-items-center">
-            <span class="navbar-text text-white fw-bold">QSL Virtual Ecuador</span>
-            <a href="<?= BASE_URL ?>/index.php?view=admin/management/login" class="btn btn-success">
-                <i class="bi bi-person-circle"></i> Login
-            </a>
-        </div>
-    </nav>
+    <?php include(APP_PATH . 'app/Include/navbar.php'); ?>
+
 
     <div class="container py-5">
         <h2 class="text-center text- text-black mb-4">REGISTROS PARA CALL: <strong><?= htmlspecialchars($call) ?></strong></h2>

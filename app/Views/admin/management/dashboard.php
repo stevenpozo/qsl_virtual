@@ -12,6 +12,7 @@ if (!isset($_SESSION['username'])) {
 
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
     <title>Panel de Administración</title>
@@ -23,22 +24,18 @@ if (!isset($_SESSION['username'])) {
 
     <!-- Estilo personalizado -->
     <link href="<?= BASE_URL ?>/styles/dashboard.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
 </head>
+
 <body>
 
     <!-- Navbar con Logout -->
-    <nav class="navbar navbar-dark bg-dark bg-opacity-90 px-4">
-        <div class="container-fluid d-flex justify-content-between align-items-center">
-            <span class="navbar-text text-white fw-bold">QSL virtual Ecuador</span>
-            <a href="#" onclick="confirmLogout()" class="btn btn-danger">
-                <i class="bi bi-box-arrow-right"></i> Cerrar sesión
-            </a>
-        </div>
-    </nav>
+    <?php include(APP_PATH . 'app/Include/navbar.php'); ?>
 
     <!-- Contenido principal -->
     <div class="container py-5 text-center">
-        <h2 class="text-black mb-5">Bienvenido  <?= htmlspecialchars($_SESSION['username']) ?></h2>
+        <h2 class="text-black mb-5">Bienvenido <?= htmlspecialchars($_SESSION['username']) ?></h2>
 
         <div class="d-flex justify-content-center flex-wrap gap-4">
             <a href="index.php?view=admin/events/list_events" class="dashboard-card text-decoration-none">
@@ -53,13 +50,6 @@ if (!isset($_SESSION['username'])) {
         </div>
     </div>
 
-    <script>
-        function confirmLogout() {
-            if (confirm("¿Estás seguro de que deseas cerrar sesión?")) {
-                window.location.href = "/qsl_virtual/index.php?action=logout";
-            }
-        }
-    </script>
-
 </body>
+
 </html>

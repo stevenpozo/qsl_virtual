@@ -24,16 +24,15 @@ if (isset($_SESSION['username'])) {
 
     <!-- Estilo personalizado -->
     <link href="<?= BASE_URL ?>/styles/login.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
 </head>
 
 <body>
 
     <!-- Navbar -->
-    <nav class="navbar navbar-dark bg-dark bg-opacity-90 px-4">
-        <div class="container-fluid d-flex justify-content-between align-items-center">
-            <span class="navbar-text text-white fw-bold">QSL Virtual Ecuador</span>
-        </div>
-    </nav>
+    <?php include(APP_PATH . 'app/Include/navbar.php'); ?>
+
 
     <!-- Formulario login -->
     <div class="container d-flex justify-content-center align-items-center min-vh-100">

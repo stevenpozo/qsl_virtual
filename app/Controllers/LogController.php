@@ -2,84 +2,76 @@
 require_once(__DIR__ . '/../Models/LogModel.php');
 require_once(__DIR__ . '/../../config/constants.php');
 
-
-// Este bloque principal gestiona la carga de un archivo .ADI con logs de contactos.
-// Extrae datos de cada línea con <EOR>, evita duplicados y los inserta en la base.
-
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['adi_file'])) {
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['log_file'])) {
     $eventId = $_POST['event_id'];
-    $archivo = $_FILES['adi_file']['tmp_name'];
+    $archivo = $_FILES['log_file']['tmp_name'];
+    $extension = pathinfo($_FILES['log_file']['name'], PATHINFO_EXTENSION);
 
-    $lines = file($archivo);
+    if (!in_array(strtolower($extension), ['csv', 'txt'])) {
+        header("Location: " . BASE_URL . "/index.php?view=admin/logs/load_log&msg=Formato no válido. Solo se permite CSV o TXT.");
+        exit;
+    }
+
     $model = new LogModel();
-
     $duplicados = 0;
     $insertados = 0;
 
-    foreach ($lines as $line) {
-        if (strpos($line, '<EOR>') !== false) {
-            $call = extractData($line, 'CALL');
-            $date = formatDate(extractData($line, 'QSO_DATE'));
-            $utc = formatTime(extractData($line, 'TIME_ON'));
+    if (($handle = fopen($archivo, "r")) !== false) {
+        $header = fgetcsv($handle, 1000, ";"); // Ignorar encabezado
 
-            if ($call && $date && $utc) {
-                $data = [
-                    'event_id' => $eventId,
-                    'call_log' => $call,
-                    'date_log' => $date,
-                    'utc_log' => $utc,
-                    'time_off_log' => formatTime(extractData($line, 'TIME_OFF')),
-                    'band_log' => extractData($line, 'BAND') ?? '',
-                    'mode_log' => extractData($line, 'MODE') ?? '',
-                    'rst_rcvd_log' => extractData($line, 'RST_RCVD') ?? '',
-                    'rst_sent_log' => extractData($line, 'RST_SENT') ?? '',
-                    'freq_log' => extractData($line, 'FREQ') ?? '',
-                    'gridsquare_log' => extractData($line, 'GRIDSQUARE') ?? '',
-                    'my_gridsquare_log' => extractData($line, 'MY_GRIDSQUARE') ?? '',
-                    'station_callsign_log' => extractData($line, 'STATION_CALLSIGN') ?? '',
-                    'comment_log' => extractData($line, 'COMMENT') ?? '',
-                    'status_log' => 1
-                ];
+        while (($row = fgetcsv($handle, 1000, ";")) !== false) {
+            if (count($row) < 10) continue;
 
-                if (!$model->existsLog($eventId, $data)) {
-                    if ($model->insertLog($data)) {
-                        $insertados++;
-                    }
-                } else {
-                    $duplicados++;
+            $data = [
+                'event_id' => $eventId,
+                'band_log' => trim($row[0]),
+                'call_log' => trim($row[1]),
+                'freq_log' => trim($row[2]),
+                'mode_log' => trim($row[3]),
+                'rst_rcvd_log' => trim($row[4]),
+                'rst_sent_log' => trim($row[5]),
+                'station_callsign_log' => trim($row[6]),
+                'time_off_log' => formatTime($row[7]),
+                'utc_log' => formatTime($row[8]),
+                'date_log' => formatDate($row[9]),
+                'status_log' => 1
+            ];
+
+            if (!$model->existsLog($eventId, $data)) {
+                if ($model->insertLog($data)) {
+                    $insertados++;
                 }
+            } else {
+                $duplicados++;
             }
         }
+
+        fclose($handle);
     }
 
-    $message = "✅ $insertados logs inserted.";
-    if ($duplicados > 0) {
-        $message .= " ⚠️ $duplicados duplicates were skipped.";
-    }
+    $message = "✅ $insertados logs insertados correctamente.";
+    if ($duplicados > 0) $message .= " ⚠️ $duplicados registros duplicados fueron omitidos.";
 
     header("Location: " . BASE_URL . "/index.php?view=admin/events/list_events&msg=" . urlencode($message));
     exit;
 }
 
-// Extrae el valor de un campo específico en una línea ADIF.
-// Ej: extrae el valor de <CALL:6>EA8AAK como "EA8AAK".
-function extractData($line, $tag)
-{
-    $pattern = "/<" . preg_quote($tag, '/') . ":\d+>([^<]*)/i";
-    return (preg_match($pattern, $line, $matches)) ? trim($matches[1]) : null;
-}
-
-// Formatea una fecha ADIF tipo "20240608" a formato SQL "2024-06-08".
+/**
+ * Convierte una fecha YYYYMMDD a YYYY-MM-DD
+ */
 function formatDate($date)
 {
-    return $date ? substr($date, 0, 4) . "-" . substr($date, 4, 2) . "-" . substr($date, 6, 2) : null;
+    return strlen($date) === 8
+        ? substr($date, 0, 4) . '-' . substr($date, 4, 2) . '-' . substr($date, 6, 2)
+        : $date;
 }
 
-// Formatea la hora ADIF tipo "154030" a formato "15:40:30".
-// Si ya tiene formato, lo conserva.
-function formatTime($hhmmss)
+/**
+ * Convierte una hora HHMMSS a HH:MM:SS
+ */
+function formatTime($time)
 {
-    return (strlen($hhmmss) === 6)
-        ? substr($hhmmss, 0, 2) . ':' . substr($hhmmss, 2, 2) . ':' . substr($hhmmss, 4, 2)
-        : $hhmmss;
+    return strlen($time) === 6
+        ? substr($time, 0, 2) . ':' . substr($time, 2, 2) . ':' . substr($time, 4, 2)
+        : $time;
 }

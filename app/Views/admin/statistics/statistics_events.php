@@ -20,28 +20,15 @@ endif; ?>
 
     <!-- Estilos personalizados -->
     <link rel="stylesheet" href="<?= BASE_URL ?>/styles/statistics_events.css">
-    <script>
-        const baseUrl = "<?= BASE_URL ?>";
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
-        function confirmLogout() {
-            if (confirm("¿Estás seguro de que deseas cerrar sesión?")) {
-                window.location.href = baseUrl + "/index.php?action=logout";
-            }
-        }
-    </script>
 
 </head>
 
 <body>
     <!-- Navbar -->
-    <nav class="navbar navbar-dark bg-dark bg-opacity-90 px-4">
-        <div class="container-fluid d-flex justify-content-between align-items-center">
-            <span class="navbar-text text-white fw-bold">QSL virtual Ecuador</span>
-            <a href="#" onclick="confirmLogout()" class="btn btn-danger">
-                <i class="bi bi-box-arrow-right"></i> Cerrar sesión
-            </a>
-        </div>
-    </nav>
+    <?php include(APP_PATH . 'app/Include/navbar.php'); ?>
+
 
     <div class="container py-5">
         <h2 class="text-center mb-4">Estadísticas de Eventos</h2>

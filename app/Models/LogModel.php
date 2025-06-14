@@ -5,66 +5,49 @@ class LogModel
 {
     private $conn;
 
-    // Constructor que inicializa la conexión a la base de datos.
     public function __construct()
     {
         $database = new Database();
         $this->conn = $database->getConnection();
     }
 
-    // Inserta un nuevo registro de contacto (QSO) en la base de datos.
     public function insertLog($data)
     {
-        $sql = "INSERT INTO logs (event_id, call_log, date_log, utc_log, time_off_log, band_log, mode_log, rst_rcvd_log, rst_sent_log, freq_log, gridsquare_log, my_gridsquare_log, station_callsign_log, comment_log, status_log)
-                VALUES (:event_id, :call_log, :date_log, :utc_log, :time_off_log, :band_log, :mode_log, :rst_rcvd_log, :rst_sent_log, :freq_log, :gridsquare_log, :my_gridsquare_log, :station_callsign_log, :comment_log, :status_log)";
+        $sql = "INSERT INTO logs (event_id, band_log, call_log, freq_log, mode_log, rst_rcvd_log, rst_sent_log, station_callsign_log, time_off_log, utc_log, date_log, status_log)
+                VALUES (:event_id, :band_log, :call_log, :freq_log, :mode_log, :rst_rcvd_log, :rst_sent_log, :station_callsign_log, :time_off_log, :utc_log, :date_log, :status_log)";
         $stmt = $this->conn->prepare($sql);
         return $stmt->execute([
             ':event_id' => $data['event_id'],
-            ':call_log' => $data['call_log'],
-            ':date_log' => $data['date_log'],
-            ':utc_log' => $data['utc_log'],
-            ':time_off_log' => $data['time_off_log'],
             ':band_log' => $data['band_log'],
+            ':call_log' => $data['call_log'],
+            ':freq_log' => $data['freq_log'],
             ':mode_log' => $data['mode_log'],
             ':rst_rcvd_log' => $data['rst_rcvd_log'],
             ':rst_sent_log' => $data['rst_sent_log'],
-            ':freq_log' => $data['freq_log'],
-            ':gridsquare_log' => $data['gridsquare_log'],
-            ':my_gridsquare_log' => $data['my_gridsquare_log'],
             ':station_callsign_log' => $data['station_callsign_log'],
-            ':comment_log' => $data['comment_log'],
+            ':time_off_log' => $data['time_off_log'],
+            ':utc_log' => $data['utc_log'],
+            ':date_log' => $data['date_log'],
             ':status_log' => $data['status_log'] ?? 1
         ]);
     }
 
-    // Verifica si ya existe un log con los mismos datos para evitar duplicados.
     public function existsLog($event_id, $data)
     {
         $sql = "SELECT COUNT(*) FROM logs WHERE 
-        event_id = :event_id AND call_log = :call_log AND date_log = :date_log 
-        AND utc_log = :utc_log AND time_off_log = :time_off_log 
-        AND band_log = :band_log AND rst_rcvd_log = :rst_rcvd_log 
-        AND rst_sent_log = :rst_sent_log AND freq_log = :freq_log 
-        AND my_gridsquare_log = :my_gridsquare_log";
+        event_id = :event_id AND call_log = :call_log AND date_log = :date_log AND utc_log = :utc_log";
 
         $stmt = $this->conn->prepare($sql);
         $stmt->execute([
             ':event_id' => $event_id,
             ':call_log' => $data['call_log'],
             ':date_log' => $data['date_log'],
-            ':utc_log' => $data['utc_log'],
-            ':time_off_log' => $data['time_off_log'],
-            ':band_log' => $data['band_log'],
-            ':rst_rcvd_log' => $data['rst_rcvd_log'],
-            ':rst_sent_log' => $data['rst_sent_log'],
-            ':freq_log' => $data['freq_log'],
-            ':my_gridsquare_log' => $data['my_gridsquare_log'],
+            ':utc_log' => $data['utc_log']
         ]);
 
         return $stmt->fetchColumn() > 0;
     }
 
-    // Recupera los logs asociados a un evento, con filtros por indicativo o fecha y paginación.
     public function getLogsByEvent($eventId, $search = '', $date = '', $limit = 20, $offset = 0)
     {
         $sql = "SELECT * FROM logs WHERE event_id = :event_id";
@@ -94,7 +77,6 @@ class LogModel
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
-    // Cuenta la cantidad de logs para un evento con filtros por indicativo o fecha.
     public function countLogsByEvent($eventId, $search = '', $date = '')
     {
         $sql = "SELECT COUNT(*) FROM logs WHERE event_id = :event_id";
@@ -115,7 +97,6 @@ class LogModel
         return $stmt->fetchColumn();
     }
 
-    // Cambia el estado (activo/inactivo) de un log según su ID.
     public function toggleStatus($logId)
     {
         $sql = "UPDATE logs SET status_log = 1 - status_log WHERE log_id = :log_id";
@@ -123,7 +104,6 @@ class LogModel
         $stmt->execute([':log_id' => $logId]);
     }
 
-    // Recupera un log específico por su ID.
     public function getLogById($logId)
     {
         $stmt = $this->conn->prepare("SELECT * FROM logs WHERE log_id = :log_id");
@@ -131,35 +111,43 @@ class LogModel
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
 
-    // Actualiza los datos de un log existente.
     public function updateLog($data)
     {
         $sql = "UPDATE logs SET 
-            call_log = :call_log,
-            date_log = :date_log,
-            utc_log = :utc_log,
-            time_off_log = :time_off_log,
-            band_log = :band_log,
-            mode_log = :mode_log,
-            rst_sent_log = :rst_sent_log,
-            rst_rcvd_log = :rst_rcvd_log,
-            freq_log = :freq_log,
-            station_callsign_log = :station_callsign_log,
-            my_gridsquare_log = :my_gridsquare_log,
-            comment_log = :comment_log
-            WHERE log_id = :log_id";
+        band_log = :band_log,
+        call_log = :call_log,
+        freq_log = :freq_log,
+        mode_log = :mode_log,
+        rst_rcvd_log = :rst_rcvd_log,
+        rst_sent_log = :rst_sent_log,
+        station_callsign_log = :station_callsign_log,
+        time_off_log = :time_off_log,
+        utc_log = :utc_log,
+        date_log = :date_log
+        WHERE log_id = :log_id";
 
         $stmt = $this->conn->prepare($sql);
-        return $stmt->execute($data);
+        return $stmt->execute([
+            ':band_log' => $data['band_log'],
+            ':call_log' => $data['call_log'],
+            ':freq_log' => $data['freq_log'],
+            ':mode_log' => $data['mode_log'],
+            ':rst_rcvd_log' => $data['rst_rcvd_log'],
+            ':rst_sent_log' => $data['rst_sent_log'],
+            ':station_callsign_log' => $data['station_callsign_log'],
+            ':time_off_log' => $data['time_off_log'],
+            ':utc_log' => $data['utc_log'],
+            ':date_log' => $data['date_log'],
+            ':log_id' => $data['log_id']
+        ]);
     }
 
-    // Retorna el objeto de conexión a la base de datos 
+
     public function getConnection()
     {
         return $this->conn;
     }
 
-    // Calcula estadísticas básicas para un evento: total de logs, indicativos únicos, última fecha, banda y modo más usados.
     public function getStatsByEvent($event_id)
     {
         $stmt = $this->conn->prepare("
@@ -169,13 +157,12 @@ class LogModel
             MAX(date_log) AS last_date,
             (SELECT band_log FROM logs WHERE event_id = :eid GROUP BY band_log ORDER BY COUNT(*) DESC LIMIT 1) AS top_band,
             (SELECT mode_log FROM logs WHERE event_id = :eid GROUP BY mode_log ORDER BY COUNT(*) DESC LIMIT 1) AS top_mode
-        FROM logs WHERE event_id = :eid
-    ");
+        FROM logs WHERE event_id = :eid");
+
         $stmt->execute([':eid' => $event_id]);
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
 
-    // Devuelve todos los logs activos de un evento para un indicativo específico.
     public function getLogsByEventAndCall($event_id, $call)
     {
         $sql = "SELECT * FROM logs 

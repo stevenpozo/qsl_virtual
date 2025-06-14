@@ -1,5 +1,6 @@
 <?php
 require_once(__DIR__ . '/../../../../config/constants.php');
+require_once(__DIR__ . '/../../../Models/EventModel.php');
 
 if (session_status() === PHP_SESSION_NONE) session_start();
 if (!isset($_SESSION['username'])) {
@@ -16,52 +17,38 @@ $eventId = $_GET['event_id'] ?? null;
 
 <head>
     <meta charset="UTF-8">
-    <title>Cargar archivo ADI</title>
+    <title>Cargar Logs CSV/TXT</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <!-- Bootstrap + Icons -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
     <link href="<?= BASE_URL ?>/styles/load_log.css" rel="stylesheet">
 
-    <script>
-        const baseUrl = "<?= BASE_URL ?>";
-
-        function confirmLogout() {
-            if (confirm("¿Estás seguro de que deseas cerrar sesión?")) {
-                window.location.href = baseUrl + "/index.php?action=logout";
-            }
-        }
-    </script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
 </head>
 
 <body>
+    <?php include(APP_PATH . 'app/Include/navbar.php'); ?>
 
-    <!-- Navbar -->
-    <nav class="navbar navbar-dark bg-dark bg-opacity-90 px-4">
-        <div class="container-fluid d-flex justify-content-between align-items-center">
-            <span class="navbar-text text-white fw-bold">QSL virtual Ecuador</span>
-            <a href="#" onclick="confirmLogout()" class="btn btn-danger">
-                <i class="bi bi-box-arrow-right"></i> Cerrar sesión
-            </a>
-        </div>
-    </nav>
 
-    <!-- Contenido -->
     <div class="container py-5">
         <div class="form-box mx-auto">
-            <h2 class="text-center mb-4">Cargar archivo .ADI</h2>
+            <h2 class="text-center mb-4">Cargar archivo .CSV o .TXT</h2>
 
-            <form action="<?= BASE_URL ?>/app/Controllers/LogController.php" method="post" enctype="multipart/form-data">
+            <?php if (isset($_GET['msg'])): ?>
+                <div class="alert alert-info text-center"><?= htmlspecialchars($_GET['msg']) ?></div>
+            <?php endif; ?>
+
+            <form id="logForm" action="<?= BASE_URL ?>/app/Controllers/LogController.php" method="post" enctype="multipart/form-data" onsubmit="return confirmSubmit()">
                 <?php if ($eventId): ?>
                     <?php $evento = $model->getEventById($eventId); ?>
                     <p><strong>Evento seleccionado:</strong> <?= $evento['name_event'] ?> (<?= $evento['date_event'] ?>)</p>
-                    <input type="hidden" name="event_id" value="<?= $evento['event_id'] ?>">
+                    <input type="hidden" name="event_id" id="event_id" value="<?= $evento['event_id'] ?>">
                 <?php else: ?>
                     <div class="mb-3">
                         <label class="form-label">Seleccionar Evento:</label>
-                        <select name="event_id" class="form-select" required>
+                        <select name="event_id" id="event_id" class="form-select" required>
                             <?php foreach ($model->getAllEvents() as $evento): ?>
                                 <option value="<?= $evento['event_id'] ?>">
                                     <?= $evento['name_event'] ?> (<?= $evento['date_event'] ?>)
@@ -72,14 +59,19 @@ $eventId = $_GET['event_id'] ?? null;
                 <?php endif; ?>
 
                 <div class="mb-3">
-                    <label class="form-label">Archivo .ADI:</label>
-                    <input type="file" name="adi_file" class="form-control" accept=".adi" required>
+                    <label class="form-label">Archivo de logs (.csv o .txt):</label>
+                    <input type="file" id="log_file" name="log_file" class="form-control" accept=".csv,.txt" required>
                 </div>
 
-                <button type="submit" class="btn btn-success w-100">
+                <button type="submit" id="submitBtn" class="btn btn-success w-100">
                     <i class="bi bi-upload"></i> Procesar Logs
                 </button>
             </form>
+
+            <div class="preview-box">
+                <div id="summary" class="mb-3 text-center fw-semibold"></div>
+                <div id="preview" class="table-responsive"></div>
+            </div>
 
             <div class="text-center mt-4">
                 <a href="<?= BASE_URL ?>/index.php?view=admin/events/list_events" class="btn btn-secondary">
@@ -88,6 +80,69 @@ $eventId = $_GET['event_id'] ?? null;
             </div>
         </div>
     </div>
+
+    <script>
+        function confirmSubmit() {
+            return confirm('¿Estás seguro de que deseas subir estos logs?');
+        }
+
+        document.getElementById('log_file').addEventListener('change', async function(e) {
+            const file = e.target.files[0];
+            if (!file) return;
+
+            const eventId = document.getElementById('event_id').value;
+            const reader = new FileReader();
+            reader.onload = async function(e) {
+                const lines = e.target.result.split(/\r?\n/);
+                const headers = lines[0].split(';');
+                const rows = lines.slice(1).filter(l => l.trim() !== '').map(line => {
+                    const values = line.split(';');
+                    const row = {};
+                    headers.forEach((h, i) => row[h.trim()] = values[i]?.trim() || '');
+                    return row;
+                });
+
+                const response = await fetch('<?= BASE_URL ?>/app/Controllers/check_duplicates.php', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        event_id: eventId,
+                        logs: rows
+                    })
+                });
+
+                const duplicates = await response.json();
+                renderPreview(headers, rows, duplicates);
+            };
+            reader.readAsText(file);
+        });
+
+        function renderPreview(headers, rows, duplicates) {
+            const container = document.getElementById('preview');
+            const summaryBox = document.getElementById('summary');
+
+            const duplicateCount = duplicates.filter(d => d.isDuplicate).length;
+            const insertCount = rows.length - duplicateCount;
+
+            summaryBox.innerHTML = `🔁 <strong>Total:</strong> ${rows.length} registros | ✅ <strong>A insertar:</strong> ${insertCount} | ⚠️ <strong>Duplicados:</strong> ${duplicateCount}`;
+
+            let html = '<table class="table table-bordered table-striped">';
+            html += '<thead><tr>' + headers.map(h => `<th>${h}</th>`).join('') + '<th>Duplicado</th></tr></thead><tbody>';
+
+            rows.forEach((row, index) => {
+                const isDup = duplicates.find(d => d.index === index)?.isDuplicate;
+                html += '<tr class="' + (isDup ? 'table-danger' : '') + '">';
+                headers.forEach(h => html += `<td>${row[h]}</td>`);
+                html += `<td>${isDup ? 'Sí' : 'No'}</td>`;
+                html += '</tr>';
+            });
+
+            html += '</tbody></table>';
+            container.innerHTML = html;
+        }
+    </script>
 </body>
 
 </html>

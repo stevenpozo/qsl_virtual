@@ -1,10 +1,15 @@
 <?php
 /**
  * Archivo de constantes globales para rutas dinámicas.
- * Define BASE_URL según el entorno (local o producción)
+ * Define BASE_URL y APP_PATH para rutas absolutas del sistema.
  */
 
-// Obtener host
+// Ruta absoluta al raíz del proyecto
+if (!defined('APP_PATH')) {
+    define('APP_PATH', realpath(__DIR__ . '/../') . '/');
+}
+
+// BASE_URL dinámico según el entorno
 $host = $_SERVER['HTTP_HOST'] ?? '';
 $base = '';
 
@@ -15,4 +20,3 @@ if (str_contains($host, 'localhost') || str_contains($host, '127.0.0.1')) {
 }
 
 define('BASE_URL', $base);
-

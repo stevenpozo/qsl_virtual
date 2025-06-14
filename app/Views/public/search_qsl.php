@@ -21,6 +21,8 @@ $events = $eventModel->getAllEvents();
 
     <!-- CSS personalizado -->
     <link rel="stylesheet" href="<?= BASE_URL ?>/styles/search_qsl.css">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
 
 </head>
 
@@ -28,14 +30,8 @@ $events = $eventModel->getAllEvents();
     <?php if (session_status() === PHP_SESSION_NONE) session_start(); ?>
 
     <!-- Navbar -->
-    <nav class="navbar navbar-dark bg-dark bg-opacity-90 px-4">
-        <div class="container-fluid d-flex justify-content-between align-items-center">
-            <span class="navbar-text text-white fw-bold">QSL Virtual Ecuador</span>
-            <a href="<?= BASE_URL ?>/index.php?view=admin/management/login" class="btn btn-success">
-                <i class="bi bi-person-circle"></i> Login
-            </a>
-        </div>
-    </nav>
+    <?php include(APP_PATH . 'app/Include/navbar.php'); ?>
+
 
     <!-- Contenido -->
     <div class="container py-5">
@@ -65,36 +61,41 @@ $events = $eventModel->getAllEvents();
                 <label for="call" class="form-label fw-semibold">
                     <i class="bi bi-broadcast-pin me-1"></i>Ingrese su indicativo (CALL):
                 </label>
-                <input type="text" name="call" id="call" class="form-control" placeholder="Ej: PU1AJN" required
-                    pattern="[A-Za-z0-9/]+" title="Solo letras, números y el signo /">
-                <div id="callError" class="text-danger mt-1" style="display: none;">
-                    Solo se permiten letras, números y el signo "/".
+                <input type="text" name="call" id="call" class="form-control" placeholder="Ej: PU1AJN" required>
+                <div id="callError" class="text-danger mt-1 d-none">
+                    Solo se permiten letras mayúsculas, números y el signo "/".
                 </div>
             </div>
 
-
-            <button type="submit" class="btn btn-primary w-100 btn-lg">
+            <button type="submit" id="searchBtn" class="btn btn-primary w-100 btn-lg" disabled>
                 <i class="bi bi-search"></i> Buscar registros
             </button>
+
         </form>
     </div>
 
     <script>
         const callInput = document.getElementById('call');
         const callError = document.getElementById('callError');
+        const searchBtn = document.getElementById('searchBtn');
         const pattern = /^[A-Z0-9/]+$/;
 
         callInput.addEventListener('input', function() {
-            const value = callInput.value;
-            if (value === '' || pattern.test(value)) {
+            // Convertir a mayúsculas automáticamente
+            this.value = this.value.toUpperCase();
+
+            if (pattern.test(this.value)) {
                 callInput.classList.remove('is-invalid');
-                callError.style.display = 'none';
+                callError.classList.add('d-none');
+                searchBtn.disabled = false;
             } else {
                 callInput.classList.add('is-invalid');
-                callError.style.display = 'block';
+                callError.classList.remove('d-none');
+                searchBtn.disabled = true;
             }
         });
     </script>
+
 </body>
 
 </html>

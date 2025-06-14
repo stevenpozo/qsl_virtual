@@ -1,5 +1,6 @@
 <?php
 require_once(__DIR__ . '/../../../../config/constants.php');
+require_once(__DIR__ . '/../../../Models/LogModel.php');
 
 if (session_status() === PHP_SESSION_NONE) session_start();
 if (!isset($_SESSION['username'])) {
@@ -7,7 +8,8 @@ if (!isset($_SESSION['username'])) {
     exit();
 }
 
-$log = $model->getLogById($_GET['log_id']);
+$model = new LogModel();
+$log = $model->getLogById($_GET['log_id'] ?? 0);
 if (!$log) {
     echo "Log no encontrado.";
     exit();
@@ -28,33 +30,25 @@ if (!$log) {
     <link href="<?= BASE_URL ?>/styles/edit_log.css" rel="stylesheet">
 
     <script>
-        const baseUrl = "<?= BASE_URL ?>";
-
-        function confirmLogout() {
-            if (confirm("¿Estás seguro de que deseas cerrar sesión?")) {
-                window.location.href = baseUrl + "/index.php?action=logout";
-            }
+        function confirmUpdate() {
+            return confirm("¿Deseas guardar los cambios en este log?");
         }
     </script>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
 
 </head>
 
 <body>
     <!-- Navbar -->
-    <nav class="navbar navbar-dark bg-dark bg-opacity-90 px-4">
-        <div class="container-fluid d-flex justify-content-between align-items-center">
-            <span class="navbar-text text-white fw-bold">QSL virtual Ecuador</span>
-            <a href="#" onclick="confirmLogout()" class="btn btn-danger">
-                <i class="bi bi-box-arrow-right"></i> Cerrar sesión
-            </a>
-        </div>
-    </nav>
+        <?php include(APP_PATH . 'app/Include/navbar.php'); ?>
+
 
     <!-- Formulario -->
     <div class="container py-5">
         <div class="form-box mx-auto">
 
-            <form method="POST" action="<?= BASE_URL ?>/index.php?action=update_log">
+            <form method="POST" action="<?= BASE_URL ?>/index.php?action=update_log" onsubmit="return confirmUpdate()">
                 <h2 class="text-center text-black mb-4">EDITAR LOG</h2>
 
                 <input type="hidden" name="log_id" value="<?= $log['log_id'] ?>">
@@ -108,16 +102,6 @@ if (!$log) {
                 <div class="mb-3">
                     <label class="form-label">Estación</label>
                     <input type="text" name="station_callsign_log" class="form-control" value="<?= $log['station_callsign_log'] ?>">
-                </div>
-
-                <div class="mb-3">
-                    <label class="form-label">My Gridsquare</label>
-                    <input type="text" name="my_gridsquare_log" class="form-control" value="<?= $log['my_gridsquare_log'] ?>">
-                </div>
-
-                <div class="mb-4">
-                    <label class="form-label">Comentario</label>
-                    <input type="text" name="comment_log" class="form-control" value="<?= $log['comment_log'] ?>">
                 </div>
 
                 <button type="submit" class="btn btn-primary w-100 btn">
